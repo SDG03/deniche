@@ -6,6 +6,7 @@ import { DEMO_PARTNER_EMAIL, DEMO_USER_EMAIL, endSession, safeNext, startSession
 import { newToken } from "@/lib/codes";
 import { db } from "@/lib/db";
 import { sendMail } from "@/lib/mail";
+import { copy } from "@/lib/copy";
 
 export async function loginDemo(formData: FormData) {
   const role = formData.get("role") === "partner" ? "partner" : "user";
@@ -23,7 +24,7 @@ const emailSchema = z.object({
 
 export async function requestMagicLink(_: unknown, formData: FormData) {
   const parsed = emailSchema.safeParse({ email: formData.get("email"), next: formData.get("next") ?? undefined });
-  if (!parsed.success) return { error: "Cet e-mail a l'air bizarre. Vérifie l'orthographe ?" };
+  if (!parsed.success) return { error: copy.errors.badEmail };
   const token = newToken();
   await db.loginToken.create({
     data: { token, email: parsed.data.email, expiresAt: new Date(Date.now() + 15 * 60_000) },
@@ -32,7 +33,7 @@ export async function requestMagicLink(_: unknown, formData: FormData) {
   const link = `/connexion/verifier?token=${token}&next=${encodeURIComponent(next)}`;
   await sendMail({
     to: parsed.data.email,
-    subject: "Ton lien de connexion Déniche",
+    subject: copy.auth.mail.subject,
     body: `Clique ici pour te connecter (valable 15 minutes) : ${link}`,
   });
   redirect(`/connexion/envoye?email=${encodeURIComponent(parsed.data.email)}&lien=${encodeURIComponent(link)}`);

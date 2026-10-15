@@ -13,11 +13,12 @@ import { DiscountBadge } from "@/components/ui/primitives";
 import { ActivityForm } from "../activity-form";
 import { PricingEditor } from "./pricing-editor";
 import { ScheduleEditor } from "./schedule-editor";
+import { copy } from "@/lib/copy";
 
 const TABS = [
-  { key: "infos", label: "Infos et photos" },
-  { key: "creneaux", label: "Créneaux" },
-  { key: "tarifs", label: "Réductions" },
+  { key: "infos", label: copy.partnerUi.activities.tabs.infos },
+  { key: "creneaux", label: copy.partnerUi.activities.tabs.creneaux },
+  { key: "tarifs", label: copy.partnerUi.activities.tabs.tarifs },
 ] as const;
 
 export async function generateMetadata({ params }: PageProps<"/partenaire/activites/[id]">) {
@@ -46,25 +47,34 @@ export default async function EditActivityPage({ params, searchParams }: PagePro
 
   return (
     <div>
-      <Link href="/partenaire/activites" className="-ml-2 inline-flex min-h-11 items-center gap-1.5 px-2 text-sm font-semibold text-ink-soft hover:text-ink">
-        <ArrowLeft aria-hidden className="size-4" /> Activités
+      <Link
+        href="/partenaire/activites"
+        className="-ml-2 inline-flex min-h-11 items-center gap-1.5 px-2 text-sm font-semibold text-ink-soft hover:text-ink"
+      >
+        <ArrowLeft aria-hidden className="size-4" /> {copy.partner.activities}
       </Link>
       <div className="mt-1 flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="font-display text-3xl font-bold">{a.title}</h1>
         {a.published && (
-          <Link href={`/activite/${a.slug}`} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-forest">
-            Voir la fiche <ArrowUpRight aria-hidden className="size-4" />
+          <Link
+            href={`/activite/${a.slug}`}
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-forest"
+          >
+            {copy.partnerUi.activities.seeListing} <ArrowUpRight aria-hidden className="size-4" />
           </Link>
         )}
       </div>
       {sp.cree === "1" && (
-        <p role="status" className="mt-3 flex items-center gap-2 rounded-xl bg-forest-soft px-4 py-3 text-sm font-semibold text-forest">
+        <p
+          role="status"
+          className="mt-3 flex items-center gap-2 rounded-xl bg-forest-soft px-4 py-3 text-sm font-semibold text-forest"
+        >
           <CircleCheck aria-hidden className="size-5" />
-          Activité créée, avec des créneaux le week-end. Règle tes horaires et tes réductions ci-dessous.
+          {copy.partnerUi.activities.created}
         </p>
       )}
 
-      <nav aria-label="Sections" className="mt-5 flex gap-1 border-b border-line">
+      <nav aria-label={copy.partnerUi.activities.sections} className="mt-5 flex gap-1 border-b border-line">
         {TABS.map((t) => (
           <Link
             key={t.key}
@@ -113,9 +123,9 @@ export default async function EditActivityPage({ params, searchParams }: PagePro
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
             <section aria-labelledby="modele">
               <h2 id="modele" className="font-display text-xl font-bold">
-                Modèle hebdomadaire
+                {copy.partnerUi.activities.templateTitle}
               </h2>
-              <p className="mt-1 mb-4 text-sm text-ink-mute">Choisis tes jours, tes horaires et le nombre de places par créneau.</p>
+              <p className="mt-1 mb-4 text-sm text-ink-mute">{copy.partnerUi.activities.templateIntro}</p>
               <ScheduleEditor
                 activityId={a.id}
                 initial={weeklyTemplateSchema.safeParse(a.weeklyTemplate).data ?? []}
@@ -124,7 +134,7 @@ export default async function EditActivityPage({ params, searchParams }: PagePro
             </section>
             <section aria-labelledby="prochains">
               <h2 id="prochains" className="font-display text-xl font-bold">
-                Prochains créneaux
+                {copy.partnerUi.activities.nextSlots}
               </h2>
               <ul className="mt-3 divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper">
                 {upcoming.map((s) => {
@@ -137,10 +147,13 @@ export default async function EditActivityPage({ params, searchParams }: PagePro
                         <DiscountBadge pct={v.discountPct} size="sm" />
                       </div>
                       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-sand" role="presentation">
-                        <div className="h-full rounded-full bg-forest" style={{ width: `${Math.max(2, fill * 100)}%` }} />
+                        <div
+                          className="h-full rounded-full bg-forest"
+                          style={{ width: `${Math.max(2, fill * 100)}%` }}
+                        />
                       </div>
                       <div className="mt-1 text-xs text-ink-mute">
-                        {s.bookedCount}/{s.capacity} places · {v.tierLabel}
+                        {copy.partnerUi.activities.slotFill(s.bookedCount, s.capacity, v.tierLabel)}
                       </div>
                     </li>
                   );

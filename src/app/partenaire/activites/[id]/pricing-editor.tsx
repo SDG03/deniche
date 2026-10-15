@@ -9,6 +9,9 @@ import { DiscountBadge } from "@/components/ui/primitives";
 import { cn } from "@/lib/cn";
 import { formatPrice } from "@/lib/format";
 import { applyDiscount, priceCurve, sortTiers, type DiscountTier } from "@/lib/pricing";
+import { copy } from "@/lib/copy";
+
+const pc = copy.partnerUi.pricing;
 
 type Rules = {
   lastMinuteEnabled: boolean;
@@ -20,12 +23,20 @@ type Rules = {
 };
 
 const FILLS = [
-  { label: "Créneau calme (20 %)", value: 0.2 },
-  { label: "Normal (60 %)", value: 0.6 },
-  { label: "Presque plein (90 %)", value: 0.9 },
+  { label: copy.partnerUi.pricing.fills[0], value: 0.2 },
+  { label: copy.partnerUi.pricing.fills[1], value: 0.6 },
+  { label: copy.partnerUi.pricing.fills[2], value: 0.9 },
 ];
 
-export function PricingEditor({ activityId, basePriceCents, initial }: { activityId: string; basePriceCents: number; initial: Rules }) {
+export function PricingEditor({
+  activityId,
+  basePriceCents,
+  initial,
+}: {
+  activityId: string;
+  basePriceCents: number;
+  initial: Rules;
+}) {
   const [rules, setRules] = useState<Rules>({ ...initial, tiers: sortTiers(initial.tiers) });
   const [fill, setFill] = useState(0.6);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -59,43 +70,64 @@ export function PricingEditor({ activityId, basePriceCents, initial }: { activit
   const save = () =>
     start(async () => {
       const r = await savePricing({ activityId, ...rules, tiers: sortTiers(rules.tiers) });
-      setMsg(r.ok ? { ok: true, text: r.message ?? "Enregistré" } : { ok: false, text: r.error ?? "Erreur" });
+      setMsg(r.ok ? { ok: true, text: r.message ?? pc.saved } : { ok: false, text: r.error ?? pc.error });
       if (r.ok) setRules((x) => ({ ...x, tiers: sortTiers(x.tiers) }));
     });
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
       {/* Aperçu en temps réel */}
-      <section aria-labelledby="curve-title" className="rounded-[var(--radius-card)] border border-line bg-paper p-5 lg:sticky lg:top-6 lg:order-2 lg:self-start">
+      <section
+        aria-labelledby="curve-title"
+        className="rounded-[var(--radius-card)] border border-line bg-paper p-5 lg:sticky lg:top-6 lg:order-2 lg:self-start"
+      >
         <h2 id="curve-title" className="font-display text-xl font-bold">
-          Prix par personne selon l&apos;heure de réservation
+          {pc.curveTitle}
         </h2>
-        <p className="mt-1 text-sm text-ink-mute">Base {formatPrice(basePriceCents)} · de 4 jours avant au départ, échelle resserrée près du départ.</p>
-        <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Scénario de remplissage">
+        <p className="mt-1 text-sm text-ink-mute">{pc.curveSub(formatPrice(basePriceCents))}</p>
+        <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label={pc.scenario}>
           {FILLS.map((f) => (
-            <Chip key={f.value} selected={fill === f.value} onClick={() => setFill(f.value)} className="min-h-10 px-3 text-xs">
+            <Chip
+              key={f.value}
+              selected={fill === f.value}
+              onClick={() => setFill(f.value)}
+              className="min-h-10 px-3 text-xs"
+            >
               {f.label}
             </Chip>
           ))}
         </div>
-        <PriceChart curve={curve} basePriceCents={basePriceCents} floorPct={rules.floorPct} cutoffMinutes={rules.cutoffMinutes} />
+        <PriceChart
+          curve={curve}
+          basePriceCents={basePriceCents}
+          floorPct={rules.floorPct}
+          cutoffMinutes={rules.cutoffMinutes}
+        />
         <table className="mt-4 w-full text-sm">
-          <caption className="sr-only">Prix par palier</caption>
+          <caption className="sr-only">{pc.tableCaption}</caption>
           <thead>
             <tr className="text-left text-xs text-ink-mute">
-              <th className="py-1 font-medium">Réservé…</th>
-              <th className="py-1 font-medium">Réduction</th>
-              <th className="py-1 text-right font-medium">Prix</th>
+              <th className="py-1 font-medium">{pc.colBooked}</th>
+              <th className="py-1 font-medium">{pc.colDiscount}</th>
+              <th className="py-1 text-right font-medium">{pc.colPrice}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
             {sortTiers(rules.tiers).map((t, i, arr) => {
-              const point = curve.find((p) => p.hoursLeft === Math.min(96, Math.ceil(t.minHours))) ?? curve[curve.length - 1];
-              const label = i === 0 ? `${t.minHours} h ou plus avant` : t.minHours === 0 ? `moins de ${arr[i - 1].minHours} h avant` : `entre ${t.minHours} et ${arr[i - 1].minHours} h avant`;
+              const point =
+                curve.find((p) => p.hoursLeft === Math.min(96, Math.ceil(t.minHours))) ?? curve[curve.length - 1];
+              const label =
+                i === 0
+                  ? pc.rowFirst(t.minHours)
+                  : t.minHours === 0
+                    ? pc.rowLast(arr[i - 1].minHours)
+                    : pc.rowBetween(t.minHours, arr[i - 1].minHours);
               return (
                 <tr key={i}>
                   <td className="py-2">{label}</td>
-                  <td className="py-2">{point.discountPct > 0 ? <DiscountBadge pct={point.discountPct} size="sm" /> : "—"}</td>
+                  <td className="py-2">
+                    {point.discountPct > 0 ? <DiscountBadge pct={point.discountPct} size="sm" /> : "—"}
+                  </td>
                   <td className="tabular py-2 text-right font-semibold">{formatPrice(point.unitPriceCents)}</td>
                 </tr>
               );
@@ -108,47 +140,60 @@ export function PricingEditor({ activityId, basePriceCents, initial }: { activit
       <section aria-labelledby="rules-title" className="space-y-5 lg:order-1">
         <div className="rounded-[var(--radius-card)] border border-line bg-paper p-5">
           <h2 id="rules-title" className="font-display text-xl font-bold">
-            Règles de réduction
+            {pc.rulesTitle}
           </h2>
           <label className="mt-4 flex min-h-11 items-center justify-between gap-4">
             <span>
-              <span className="block font-semibold">Dernière minute activée</span>
-              <span className="text-sm text-ink-mute">Sans elle, le prix reste fixe.</span>
+              <span className="block font-semibold">{pc.lastMinute}</span>
+              <span className="text-sm text-ink-mute">{pc.lastMinuteHint}</span>
             </span>
-            <input type="checkbox" checked={rules.lastMinuteEnabled} onChange={(e) => set("lastMinuteEnabled", e.target.checked)} className="size-6 accent-forest" />
+            <input
+              type="checkbox"
+              checked={rules.lastMinuteEnabled}
+              onChange={(e) => set("lastMinuteEnabled", e.target.checked)}
+              className="size-6 accent-forest"
+            />
           </label>
 
-          <fieldset className={cn("mt-5", !rules.lastMinuteEnabled && "pointer-events-none opacity-50")} disabled={!rules.lastMinuteEnabled}>
-            <legend className="text-sm font-semibold">Paliers</legend>
+          <fieldset
+            className={cn("mt-5", !rules.lastMinuteEnabled && "pointer-events-none opacity-50")}
+            disabled={!rules.lastMinuteEnabled}
+          >
+            <legend className="text-sm font-semibold">{pc.tiers}</legend>
             <ul className="mt-2 space-y-2">
               {rules.tiers.map((t, i) => (
                 <li key={i} className="flex flex-wrap items-center gap-2 text-sm">
-                  <span>À partir de</span>
+                  <span>{pc.from}</span>
                   <input
                     type="number"
                     min={0}
                     max={336}
                     value={t.minHours}
                     onChange={(e) => setTier(i, { minHours: Math.max(0, Number(e.target.value)) })}
-                    aria-label={`Seuil du palier ${i + 1} en heures`}
+                    aria-label={pc.tierHours(i + 1)}
                     className="tabular h-11 w-20 rounded-xl border border-line-strong bg-cream px-2 text-center"
                   />
-                  <span>h avant :</span>
+                  <span>{pc.hoursBefore}</span>
                   <input
                     type="number"
                     min={0}
                     max={90}
                     value={t.pct}
                     onChange={(e) => setTier(i, { pct: Math.min(90, Math.max(0, Math.round(Number(e.target.value)))) })}
-                    aria-label={`Réduction du palier ${i + 1} en pourcent`}
+                    aria-label={pc.tierPct(i + 1)}
                     className="tabular h-11 w-16 rounded-xl border border-line-strong bg-cream px-2 text-center"
                   />
                   <span>%</span>
                   <button
                     type="button"
-                    onClick={() => set("tiers", rules.tiers.filter((_, j) => j !== i))}
+                    onClick={() =>
+                      set(
+                        "tiers",
+                        rules.tiers.filter((_, j) => j !== i),
+                      )
+                    }
                     disabled={rules.tiers.length <= 1}
-                    aria-label={`Supprimer le palier ${i + 1}`}
+                    aria-label={pc.removeTier(i + 1)}
                     className="ml-auto grid size-11 place-items-center rounded-full text-ink-mute hover:bg-ink/5 hover:text-danger disabled:opacity-30"
                   >
                     <Trash2 aria-hidden className="size-4" />
@@ -163,57 +208,62 @@ export function PricingEditor({ activityId, basePriceCents, initial }: { activit
               disabled={rules.tiers.length >= 8}
               onClick={() => set("tiers", [...rules.tiers, { minHours: 1, pct: 45 }])}
             >
-              <Plus aria-hidden className="size-4" /> Ajouter un palier
+              <Plus aria-hidden className="size-4" /> {pc.addTier}
             </Button>
           </fieldset>
         </div>
 
         <div className="space-y-5 rounded-[var(--radius-card)] border border-line bg-paper p-5">
           <Slider
-            label="Prix plancher"
-            hint={`Jamais moins de ${formatPrice(applyDiscount(basePriceCents, 100 - rules.floorPct, rules.floorPct))} par personne.`}
+            label={pc.floor}
+            hint={pc.floorHint(formatPrice(applyDiscount(basePriceCents, 100 - rules.floorPct, rules.floorPct)))}
             value={rules.floorPct}
             min={30}
             max={100}
             step={5}
-            unit="% du prix de base"
+            unit={pc.floorUnit}
             onChange={(v) => set("floorPct", v)}
           />
           <Slider
-            label="Quota de places réduites"
-            hint="Au-delà, les places restantes sont au plein tarif."
+            label={pc.quota}
+            hint={pc.quotaHint}
             value={rules.quotaPct}
             min={0}
             max={100}
             step={10}
-            unit="% de la capacité"
+            unit={pc.quotaUnit}
             onChange={(v) => set("quotaPct", v)}
           />
           <Slider
-            label="Fermeture des réservations"
-            hint="Délai avant le début du créneau."
+            label={pc.cutoff}
+            hint={pc.cutoffHint}
             value={rules.cutoffMinutes}
             min={0}
             max={240}
             step={15}
-            unit="min avant"
+            unit={pc.cutoffUnit}
             onChange={(v) => set("cutoffMinutes", v)}
           />
           <label className="flex min-h-11 items-center justify-between gap-4">
             <span>
-              <span className="block font-semibold">Bonus créneau calme</span>
-              <span className="text-sm text-ink-mute">+10 points si rempli à moins de 40 % à moins de 24 h. Aucune réduction au-delà de 80 %.</span>
+              <span className="block font-semibold">{pc.bonus}</span>
+              <span className="text-sm text-ink-mute">{pc.bonusHint}</span>
             </span>
-            <input type="checkbox" checked={rules.fillBonusEnabled} onChange={(e) => set("fillBonusEnabled", e.target.checked)} className="size-6 accent-forest" />
+            <input
+              type="checkbox"
+              checked={rules.fillBonusEnabled}
+              onChange={(e) => set("fillBonusEnabled", e.target.checked)}
+              className="size-6 accent-forest"
+            />
           </label>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="forest" onClick={save} disabled={pending}>
-            {pending ? "Enregistrement…" : "Enregistrer les règles"}
+            {pending ? copy.partnerUi.form.saving : pc.save}
           </Button>
           <Button variant="ghost" onClick={() => setRules({ ...initial, tiers: sortTiers(initial.tiers) })}>
-            Annuler les changements
+            {pc.reset}
           </Button>
           {msg && (
             <span role="status" className={cn("text-sm font-medium", msg.ok ? "text-success" : "text-danger")}>
@@ -324,7 +374,7 @@ function PriceChart({
         height={H}
         className="w-full touch-none select-none"
         role="img"
-        aria-label="Courbe de prix : le prix par personne baisse par paliers à l'approche du départ."
+        aria-label={pc.chartLabel}
         onPointerMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           const vx = ((e.clientX - r.left) / r.width) * W;
@@ -344,38 +394,79 @@ function PriceChart({
           </g>
         ))}
         {/* plancher */}
-        <line x1={pad.l} x2={W - pad.r} y1={y(floorCents)} y2={y(floorCents)} stroke="var(--ink-mute)" strokeWidth={1} strokeDasharray="4 4" />
+        <line
+          x1={pad.l}
+          x2={W - pad.r}
+          y1={y(floorCents)}
+          y2={y(floorCents)}
+          stroke="var(--ink-mute)"
+          strokeWidth={1}
+          strokeDasharray="4 4"
+        />
         <text x={W - pad.r} y={y(floorCents) - 5} textAnchor="end" fontSize={12} fill="var(--ink-mute)">
-          plancher {Math.round(floorCents / 100)} €
+          {pc.floorLine(Math.round(floorCents / 100))}
         </text>
         {/* fermeture */}
         {cutoffMinutes > 0 && (
-          <rect x={cutoffX} y={pad.t} width={W - pad.r - cutoffX} height={H - pad.t - pad.b} fill="var(--sand)" opacity={0.6}>
-            <title>Réservations fermées</title>
+          <rect
+            x={cutoffX}
+            y={pad.t}
+            width={W - pad.r - cutoffX}
+            height={H - pad.t - pad.b}
+            fill="var(--sand)"
+            opacity={0.6}
+          >
+            <title>{pc.closedZone}</title>
           </rect>
         )}
         {/* axe X */}
         {ticks.map((h) => (
-          <text key={h} x={x(h)} y={H - 8} textAnchor={h === 0 ? "end" : h === maxH ? "start" : "middle"} fontSize={12} fill="var(--ink-mute)">
-            {h === 0 ? "départ" : `${h} h`}
+          <text
+            key={h}
+            x={x(h)}
+            y={H - 8}
+            textAnchor={h === 0 ? "end" : h === maxH ? "start" : "middle"}
+            fontSize={12}
+            fill="var(--ink-mute)"
+          >
+            {h === 0 ? pc.axisStart : `${h} h`}
           </text>
         ))}
         <path d={d} fill="none" stroke="var(--forest)" strokeWidth={2.5} strokeLinejoin="round" />
         {hp && (
           <g>
-            <line x1={x(hp.hoursLeft)} x2={x(hp.hoursLeft)} y1={pad.t} y2={H - pad.b} stroke="var(--ink)" strokeOpacity={0.25} strokeWidth={1} />
-            <circle cx={x(hp.hoursLeft)} cy={y(hp.unitPriceCents)} r={5} fill="var(--forest)" stroke="var(--paper)" strokeWidth={2} />
+            <line
+              x1={x(hp.hoursLeft)}
+              x2={x(hp.hoursLeft)}
+              y1={pad.t}
+              y2={H - pad.b}
+              stroke="var(--ink)"
+              strokeOpacity={0.25}
+              strokeWidth={1}
+            />
+            <circle
+              cx={x(hp.hoursLeft)}
+              cy={y(hp.unitPriceCents)}
+              r={5}
+              fill="var(--forest)"
+              stroke="var(--paper)"
+              strokeWidth={2}
+            />
           </g>
         )}
       </svg>
       {hp && (
         <div
           className="tabular pointer-events-none absolute top-0 rounded-xl border border-line bg-paper px-3 py-2 text-xs shadow-[0_6px_20px_rgb(20_32_27/0.12)]"
-          style={{ left: `${(x(hp.hoursLeft) / W) * 100}%`, transform: `translateX(${hp.hoursLeft < maxH / 2 ? "-100%" : "0"})` }}
+          style={{
+            left: `${(x(hp.hoursLeft) / W) * 100}%`,
+            transform: `translateX(${hp.hoursLeft < maxH / 2 ? "-100%" : "0"})`,
+          }}
         >
-          <div className="text-ink-mute">{hp.hoursLeft === 0 ? "Au départ" : `${hp.hoursLeft} h avant`}</div>
+          <div className="text-ink-mute">{hp.hoursLeft === 0 ? pc.atStart : pc.hoursBeforeShort(hp.hoursLeft)}</div>
           <div className="text-sm font-bold text-ink">
-            {formatPrice(hp.unitPriceCents)} {hp.discountPct > 0 && <span className="text-coral-ink">−{hp.discountPct} %</span>}
+            {formatPrice(hp.unitPriceCents)}{" "}
+            {hp.discountPct > 0 && <span className="text-coral-ink">−{hp.discountPct} %</span>}
           </div>
         </div>
       )}

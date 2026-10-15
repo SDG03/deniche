@@ -6,7 +6,10 @@ import { copy } from "@/lib/copy";
 
 export default function NotFound() {
   return (
-    <main id="contenu" className="mx-auto flex min-h-[80dvh] max-w-md flex-col items-center justify-center px-6 text-center">
+    <main
+      id="contenu"
+      className="mx-auto flex min-h-[80dvh] max-w-md flex-col items-center justify-center px-6 text-center"
+    >
       <Logo />
       <div className="mt-10 grid size-16 place-items-center rounded-full bg-forest-soft text-forest">
         <Compass aria-hidden className="size-8" />

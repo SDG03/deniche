@@ -10,9 +10,7 @@ export function Chip({ selected, className, children, ...props }: ChipProps) {
       aria-pressed={selected}
       className={cn(
         "inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors duration-150",
-        selected
-          ? "border-forest bg-forest text-cream"
-          : "border-line-strong bg-paper text-ink hover:border-ink/40",
+        selected ? "border-forest bg-forest text-cream" : "border-line-strong bg-paper text-ink hover:border-ink/40",
         className,
       )}
       {...props}

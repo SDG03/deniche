@@ -26,7 +26,12 @@ export default async function ExplorerPage({ searchParams }: PageProps<"/explore
   return (
     <div className="mx-auto max-w-6xl px-4 pt-5 md:px-6 md:pt-10">
       <PageTitle title={copy.explore.title} />
-      <ExplorerControls view={view} activeCount={countActiveFilters(filters)} resultCount={results.length} today={dayKey(now)} />
+      <ExplorerControls
+        view={view}
+        activeCount={countActiveFilters(filters)}
+        resultCount={results.length}
+        today={dayKey(now)}
+      />
 
       <div className="mt-5">
         {results.length === 0 ? (

@@ -11,7 +11,10 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
     console.error(error);
   }, [error]);
   return (
-    <main id="contenu" className="mx-auto flex min-h-[70dvh] max-w-md flex-col items-center justify-center px-6 text-center">
+    <main
+      id="contenu"
+      className="mx-auto flex min-h-[70dvh] max-w-md flex-col items-center justify-center px-6 text-center"
+    >
       <h1 className="font-display text-3xl font-bold">{copy.states.error}</h1>
       <p className="mt-2 text-ink-soft">{copy.states.errorBody}</p>
       <div className="mt-6 flex gap-3">

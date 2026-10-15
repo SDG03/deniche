@@ -10,7 +10,10 @@ export default async function NewActivityPage() {
   await requirePartner();
   return (
     <div>
-      <Link href="/partenaire/activites" className="-ml-2 inline-flex min-h-11 items-center gap-1.5 px-2 text-sm font-semibold text-ink-soft hover:text-ink">
+      <Link
+        href="/partenaire/activites"
+        className="-ml-2 inline-flex min-h-11 items-center gap-1.5 px-2 text-sm font-semibold text-ink-soft hover:text-ink"
+      >
         <ArrowLeft aria-hidden className="size-4" /> {copy.partner.activities}
       </Link>
       <h1 className="mt-1 mb-6 font-display text-3xl font-bold">{copy.partner.newActivity}</h1>

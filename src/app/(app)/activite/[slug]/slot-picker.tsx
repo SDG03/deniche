@@ -71,7 +71,10 @@ export function SlotPicker({
   const share = async () => {
     if (!slot) return;
     const url = `${location.origin}/activite/${activity.slug}?creneau=${slot.id}`;
-    const text = copy.confirmation.shareText(activity.title, `le ${format(inBrussels(slot.startsAt), "EEEE d MMMM 'à' HH:mm", { locale: fr })}`);
+    const text = copy.confirmation.shareText(
+      activity.title,
+      t.onDate(format(inBrussels(slot.startsAt), "EEEE d MMMM 'à' HH:mm", { locale: fr })),
+    );
     try {
       if (navigator.share) await navigator.share({ title: activity.title, text, url });
       else {
@@ -91,7 +94,11 @@ export function SlotPicker({
       </h2>
 
       {/* Jours */}
-      <div role="tablist" aria-label="Jours" className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 md:-mx-5 md:px-5">
+      <div
+        role="tablist"
+        aria-label={t.daysLabel}
+        className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 md:-mx-5 md:px-5"
+      >
         {days.map((d) => {
           const list = byDay.get(d) ?? [];
           const open = list.some((s) => s.bookable);
@@ -119,7 +126,9 @@ export function SlotPicker({
                 {format(date, "EEE", { locale: fr }).replace(".", "")}
               </span>
               <span className="tabular font-display text-lg leading-tight font-bold">{format(date, "d")}</span>
-              {best > 0 && <span aria-label={`jusqu'à −${best} %`} className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-coral" />}
+              {best > 0 && (
+                <span aria-label={t.upTo(best)} className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-coral" />
+              )}
             </button>
           );
         })}
@@ -130,7 +139,7 @@ export function SlotPicker({
         {daySlots.length === 0 ? (
           <p className="rounded-xl bg-cream-deep px-4 py-3 text-sm text-ink-mute">{t.noSlotsDay}</p>
         ) : (
-          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3" aria-label="Créneaux">
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3" aria-label={t.slotsLabel}>
             {daySlots.map((s) => {
               const selected = s.id === slotId;
               const status = s.seatsLeft === 0 ? t.full : !s.bookable ? t.closed : null;
@@ -157,8 +166,18 @@ export function SlotPicker({
                       <span className="mt-1 text-sm font-medium text-ink-mute">{status}</span>
                     ) : (
                       <>
-                        <PriceTag baseCents={s.basePriceCents} currentCents={s.unitPriceCents} size="sm" className="mt-0.5" />
-                        <span className={cn("mt-0.5 text-xs", s.seatsLeft <= 3 ? "font-semibold text-coral-ink" : "text-ink-mute")}>
+                        <PriceTag
+                          baseCents={s.basePriceCents}
+                          currentCents={s.unitPriceCents}
+                          size="sm"
+                          className="mt-0.5"
+                        />
+                        <span
+                          className={cn(
+                            "mt-0.5 text-xs",
+                            s.seatsLeft <= 3 ? "font-semibold text-coral-ink" : "text-ink-mute",
+                          )}
+                        >
                           {t.placesLeft(s.seatsLeft)}
                         </span>
                       </>
@@ -173,7 +192,7 @@ export function SlotPicker({
 
       {/* Détail du créneau choisi */}
       {slot && (
-        <div className="animate-fade-up mt-4 rounded-2xl border border-line bg-paper p-4">
+        <div className="mt-4 animate-fade-up rounded-2xl border border-line bg-paper p-4">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
             <span className="font-semibold">{slot.tierLabel}</span>
             {countdown && (
@@ -196,7 +215,7 @@ export function SlotPicker({
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                aria-label="Une personne de moins"
+                aria-label={copy.common.lessPerson}
                 disabled={people <= Math.max(1, activity.minPeople)}
                 onClick={() => setPeople(people - 1)}
                 className="grid size-11 place-items-center rounded-full border border-line-strong bg-paper disabled:opacity-40"
@@ -208,7 +227,7 @@ export function SlotPicker({
               </span>
               <button
                 type="button"
-                aria-label="Une personne de plus"
+                aria-label={copy.common.morePerson}
                 disabled={people >= maxPeople}
                 onClick={() => setPeople(people + 1)}
                 className="grid size-11 place-items-center rounded-full border border-line-strong bg-paper disabled:opacity-40"
@@ -217,9 +236,15 @@ export function SlotPicker({
               </button>
             </div>
           </div>
-          {discounted < people && slot.discountPct > 0 && <p className="mt-2 text-xs text-ink-mute">{copy.booking.quotaNote}</p>}
+          {discounted < people && slot.discountPct > 0 && (
+            <p className="mt-2 text-xs text-ink-mute">{copy.booking.quotaNote}</p>
+          )}
 
-          <button type="button" onClick={share} className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-forest">
+          <button
+            type="button"
+            onClick={share}
+            className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-forest"
+          >
             <Share2 aria-hidden className="size-4" />
             {shared ? copy.confirmation.copied : t.share}
           </button>

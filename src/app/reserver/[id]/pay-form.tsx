@@ -58,7 +58,9 @@ export function PayForm({
         <Lock aria-hidden className={cn("size-5 shrink-0", expired ? "text-danger" : "text-forest")} />
         <div className="flex-1 text-sm">
           <div className="font-semibold">{expired ? t.lockExpired : t.lockTitle}</div>
-          {!expired && <div className="text-ink-soft">{t.lockBody(remaining === null ? "10:00" : mmss(remaining))}</div>}
+          {!expired && (
+            <div className="text-ink-soft">{t.lockBody(remaining === null ? "10:00" : mmss(remaining))}</div>
+          )}
         </div>
         {!expired && (
           <span className={cn("tabular font-display text-2xl font-bold", urgent ? "text-coral-ink" : "text-forest")}>
@@ -96,10 +98,12 @@ export function PayForm({
           <fieldset>
             <legend className="font-display text-xl font-bold">{t.payment}</legend>
             {provider === "stripe" ? (
-              <p className="mt-3 rounded-2xl border border-line bg-paper p-4 text-sm text-ink-soft">{t.stripeRedirect}</p>
+              <p className="mt-3 rounded-2xl border border-line bg-paper p-4 text-sm text-ink-soft">
+                {t.stripeRedirect}
+              </p>
             ) : (
               <div className="mt-3 rounded-2xl border border-line bg-paper p-4">
-                <div role="radiogroup" aria-label="Moyen de paiement" className="grid grid-cols-2 gap-2">
+                <div role="radiogroup" aria-label={t.method} className="grid grid-cols-2 gap-2">
                   {(["card", "bancontact"] as const).map((m) => (
                     <button
                       key={m}
@@ -112,7 +116,11 @@ export function PayForm({
                         method === m ? "border-forest bg-forest-soft text-forest" : "border-line-strong",
                       )}
                     >
-                      {m === "card" ? <CreditCard aria-hidden className="size-4" /> : <Smartphone aria-hidden className="size-4" />}
+                      {m === "card" ? (
+                        <CreditCard aria-hidden className="size-4" />
+                      ) : (
+                        <Smartphone aria-hidden className="size-4" />
+                      )}
                       {t.mockMethods[m]}
                     </button>
                   ))}
@@ -120,7 +128,7 @@ export function PayForm({
                 {method === "card" ? (
                   <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_88px_72px]">
                     <label className="col-span-2 block sm:col-span-1">
-                      <span className="text-xs font-semibold text-ink-mute">Numéro de carte</span>
+                      <span className="text-xs font-semibold text-ink-mute">{t.cardNumber}</span>
                       <input
                         name="cardNumber"
                         inputMode="numeric"
@@ -130,7 +138,7 @@ export function PayForm({
                       />
                     </label>
                     <label className="block">
-                      <span className="text-xs font-semibold text-ink-mute">Expire</span>
+                      <span className="text-xs font-semibold text-ink-mute">{t.expiry}</span>
                       <input
                         defaultValue="12/30"
                         autoComplete="off"
@@ -138,7 +146,7 @@ export function PayForm({
                       />
                     </label>
                     <label className="block">
-                      <span className="text-xs font-semibold text-ink-mute">CVC</span>
+                      <span className="text-xs font-semibold text-ink-mute">{t.cvc}</span>
                       <input
                         defaultValue="123"
                         autoComplete="off"
@@ -146,13 +154,11 @@ export function PayForm({
                       />
                     </label>
                     <p className="col-span-2 text-xs text-ink-mute sm:col-span-3">
-                      {t.mockCard}. Essaie 4000 0000 0000 0002 pour voir un refus.
+                      {t.mockCard}. {t.declinedHint}
                     </p>
                   </div>
                 ) : (
-                  <p className="mt-4 text-sm text-ink-soft">
-                    Simulation Bancontact : en vrai, tu scannerais un QR code avec ton appli bancaire. Ici, il suffit de payer.
-                  </p>
+                  <p className="mt-4 text-sm text-ink-soft">{t.bancontactMock}</p>
                 )}
               </div>
             )}

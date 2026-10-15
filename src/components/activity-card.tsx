@@ -56,7 +56,10 @@ export function ActivityCard({
           </span>
         </div>
         <h3 className="mt-1 font-display text-lg leading-snug font-bold">
-          <Link href={href} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">
+          <Link
+            href={href}
+            className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none"
+          >
             {a.title}
           </Link>
         </h3>

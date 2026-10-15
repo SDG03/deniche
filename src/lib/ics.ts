@@ -37,7 +37,10 @@ export function buildIcs(e: {
 }
 
 function utc(d: Date) {
-  return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  return d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}/, "");
 }
 
 function escape(s: string) {

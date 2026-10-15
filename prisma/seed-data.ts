@@ -333,7 +333,10 @@ export const ACTIVITIES: SeedActivity[] = [
     tags: ["nature", "en famille", "court"],
     cancellationPolicy: "FLEXIBLE",
     popularity: 0.35,
-    weekly: [...every([1, 2, 3, 4, 5], ["11:00", "15:00"], 16), ...every(WEEKEND, ["10:00", "12:00", "14:00", "16:00"], 20)],
+    weekly: [
+      ...every([1, 2, 3, 4, 5], ["11:00", "15:00"], 16),
+      ...every(WEEKEND, ["10:00", "12:00", "14:00", "16:00"], 20),
+    ],
   },
   {
     slug: "trail-fagnes-malmedy",
@@ -538,10 +541,22 @@ export const ACTIVITIES: SeedActivity[] = [
 ];
 
 export const REVIEW_SNIPPETS = [
-  { author: "Lucie D.", rating: 5, comment: "On y est allées sur un coup de tête un samedi, et on y retourne le mois prochain." },
+  {
+    author: "Lucie D.",
+    rating: 5,
+    comment: "On y est allées sur un coup de tête un samedi, et on y retourne le mois prochain.",
+  },
   { author: "Thomas V.", rating: 4, comment: "Super encadrement. Un peu d'attente à l'accueil, mais rien de grave." },
-  { author: "Inès M.", rating: 5, comment: "Réservé à 2 h du créneau avec la réduction. Meilleur rapport qualité-prix de l'année." },
-  { author: "Julien B.", rating: 4, comment: "Parfait pour un anniversaire à huit. Prévoyez des vêtements de rechange." },
+  {
+    author: "Inès M.",
+    rating: 5,
+    comment: "Réservé à 2 h du créneau avec la réduction. Meilleur rapport qualité-prix de l'année.",
+  },
+  {
+    author: "Julien B.",
+    rating: 4,
+    comment: "Parfait pour un anniversaire à huit. Prévoyez des vêtements de rechange.",
+  },
   { author: "Sarah K.", rating: 5, comment: "Je ne connaissais pas du tout, c'était une vraie découverte." },
   { author: "Maxime L.", rating: 3, comment: "Bonne activité, mais il faisait froid. Prenez un pull." },
 ];

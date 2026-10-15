@@ -27,7 +27,7 @@ export function CancelBooking({ bookingId, amount, until }: { bookingId: string;
         footer={
           <div className="flex gap-3">
             <Button variant="outline" className="flex-1" onClick={() => setOpen(false)}>
-              Garder
+              {copy.bookings.keep}
             </Button>
             <Button
               variant="forest"
@@ -43,13 +43,13 @@ export function CancelBooking({ bookingId, amount, until }: { bookingId: string;
                 })
               }
             >
-              {pending ? "Annulation…" : "Oui, annuler"}
+              {pending ? copy.bookings.cancelling : copy.bookings.confirmCancel}
             </Button>
           </div>
         }
       >
         <p className="text-ink-soft">
-          Tu seras remboursé de <strong className="text-ink">{amount}</strong>. {copy.bookings.refundNote}
+          {copy.bookings.refundPrefix} <strong className="text-ink">{amount}</strong>. {copy.bookings.refundNote}
         </p>
         <p className="mt-2 text-sm text-ink-mute">{copy.bookings.cancellableUntil(until)}.</p>
       </BottomSheet>

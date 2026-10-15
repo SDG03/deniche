@@ -212,36 +212,35 @@ export function applyFilters(list: ActivitySummary[], f: CatalogFilters, now = n
   const people = f.people ?? 1;
   const q = f.q ? normalize(f.q) : null;
 
-  const out = list
-    .flatMap((a): ActivitySummary[] => {
-      if (f.category && a.category !== f.category) return [];
-      if (f.setting && a.setting !== f.setting && a.setting !== "MIXED") return [];
-      if (f.distance && a.distanceKm > f.distance) return [];
-      if (people > a.maxPeople) return [];
-      if (q) {
-        const hay = normalize([a.title, a.tagline, a.city, a.categoryLabel, ...a.tags].join(" "));
-        if (!q.split(/\s+/).every((w) => hay.includes(w))) return [];
-      }
-      // Créneaux compatibles avec la date et le nombre de personnes
-      const slots = a.slots.filter(
-        (s) =>
-          s.bookable &&
-          s.seatsLeft >= people &&
-          (!window || (new Date(s.startsAt) >= window[0] && new Date(s.startsAt) < window[1])),
-      );
-      if ((window || f.people) && !slots.length) return [];
-      const pool = slots.length ? slots : a.slots.filter((s) => s.bookable);
-      const fromPriceCents = pool.length ? Math.min(...pool.map((s) => s.unitPriceCents)) : a.basePriceCents;
-      if (f.budget && fromPriceCents > f.budget * 100) return [];
-      return [
-        {
-          ...a,
-          fromPriceCents,
-          bestDiscountPct: pool.length ? Math.max(...pool.map((s) => s.discountPct)) : 0,
-          nextSlot: pool[0] ?? null,
-        },
-      ];
-    });
+  const out = list.flatMap((a): ActivitySummary[] => {
+    if (f.category && a.category !== f.category) return [];
+    if (f.setting && a.setting !== f.setting && a.setting !== "MIXED") return [];
+    if (f.distance && a.distanceKm > f.distance) return [];
+    if (people > a.maxPeople) return [];
+    if (q) {
+      const hay = normalize([a.title, a.tagline, a.city, a.categoryLabel, ...a.tags].join(" "));
+      if (!q.split(/\s+/).every((w) => hay.includes(w))) return [];
+    }
+    // Créneaux compatibles avec la date et le nombre de personnes
+    const slots = a.slots.filter(
+      (s) =>
+        s.bookable &&
+        s.seatsLeft >= people &&
+        (!window || (new Date(s.startsAt) >= window[0] && new Date(s.startsAt) < window[1])),
+    );
+    if ((window || f.people) && !slots.length) return [];
+    const pool = slots.length ? slots : a.slots.filter((s) => s.bookable);
+    const fromPriceCents = pool.length ? Math.min(...pool.map((s) => s.unitPriceCents)) : a.basePriceCents;
+    if (f.budget && fromPriceCents > f.budget * 100) return [];
+    return [
+      {
+        ...a,
+        fromPriceCents,
+        bestDiscountPct: pool.length ? Math.max(...pool.map((s) => s.discountPct)) : 0,
+        nextSlot: pool[0] ?? null,
+      },
+    ];
+  });
 
   const far = Number.MAX_SAFE_INTEGER;
   out.sort((a, b) => {

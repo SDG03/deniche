@@ -11,9 +11,9 @@ import { BookingRow } from "../booking-row";
 export const metadata = { title: copy.partner.bookings };
 
 const TABS = [
-  { key: "recentes", label: "Reçues récemment" },
-  { key: "a-venir", label: "À venir" },
-  { key: "passees", label: "Passées" },
+  { key: "recentes", label: copy.partnerUi.bookings.tabs.recentes },
+  { key: "a-venir", label: copy.partnerUi.bookings.tabs["a-venir"] },
+  { key: "passees", label: copy.partnerUi.bookings.tabs.passees },
 ] as const;
 
 export default async function PartnerBookingsPage({ searchParams }: PageProps<"/partenaire/reservations">) {
@@ -26,14 +26,16 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps<"/
       ? await getPartnerBookings(partnerId, { take: 40 })
       : tab === "a-venir"
         ? await getPartnerBookings(partnerId, { from: now, orderBy: "slot", take: 100 })
-        : (await getPartnerBookings(partnerId, { to: now, take: 300 })).sort((a, b) => b.slot.startsAt.getTime() - a.slot.startsAt.getTime()).slice(0, 60);
+        : (await getPartnerBookings(partnerId, { to: now, take: 300 }))
+            .sort((a, b) => b.slot.startsAt.getTime() - a.slot.startsAt.getTime())
+            .slice(0, 60);
 
   return (
     <div>
       <AutoRefresh />
       <h1 className="font-display text-3xl font-bold">{copy.partner.bookings}</h1>
-      <p className="mt-1 text-sm text-ink-mute">La liste se met à jour toute seule. Les nouvelles réservations sont surlignées.</p>
-      <nav aria-label="Filtrer" className="mt-4 flex flex-wrap gap-2">
+      <p className="mt-1 text-sm text-ink-mute">{copy.partnerUi.bookings.intro}</p>
+      <nav aria-label={copy.partnerUi.bookings.filter} className="mt-4 flex flex-wrap gap-2">
         {TABS.map((t) => (
           <Link
             key={t.key}
@@ -56,7 +58,11 @@ export default async function PartnerBookingsPage({ searchParams }: PageProps<"/
             ))}
           </ul>
         ) : (
-          <EmptyState icon={<Inbox className="size-6" />} title="Aucune réservation" body="Elles apparaîtront ici dès qu'un client réserve." />
+          <EmptyState
+            icon={<Inbox className="size-6" />}
+            title={copy.partnerUi.bookings.emptyTitle}
+            body={copy.partnerUi.bookings.emptyBody}
+          />
         )}
       </div>
     </div>

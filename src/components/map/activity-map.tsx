@@ -5,6 +5,7 @@ import L from "leaflet";
 import { useEffect, useMemo } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { formatPrice } from "@/lib/format";
+import { copy } from "@/lib/copy";
 
 export type MapPoint = {
   id: string;
@@ -64,22 +65,33 @@ export default function ActivityMap({
 }) {
   const center = useMemo<[number, number]>(() => [you.lat, you.lng], [you.lat, you.lng]);
   return (
-    <MapContainer center={center} zoom={10} scrollWheelZoom className={className} zoomControl={zoomControl} attributionControl>
+    <MapContainer
+      center={center}
+      zoom={10}
+      scrollWheelZoom
+      className={className}
+      zoomControl={zoomControl}
+      attributionControl
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitBounds points={points} you={center} />
-      <Marker position={center} icon={youIcon} keyboard={false} title="Ta position" />
+      <Marker position={center} icon={youIcon} keyboard={false} title={copy.common.yourPosition} />
       {points.map((p) => (
         <Marker key={p.id} position={[p.lat, p.lng]} icon={priceIcon(p)} title={p.title}>
           <Popup>
             <a href={p.href} style={{ display: "block", width: 200, color: "#14201B", textDecoration: "none" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={p.image} alt="" style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover", borderRadius: 10 }} />
+              <img
+                src={p.image}
+                alt=""
+                style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover", borderRadius: 10 }}
+              />
               <strong style={{ display: "block", marginTop: 8, fontSize: 14, lineHeight: 1.3 }}>{p.title}</strong>
               <span style={{ fontSize: 12, color: "#5f6b65" }}>
-                {p.city} · dès {formatPrice(p.priceCents, { short: true })}
+                {p.city} · {copy.card.from} {formatPrice(p.priceCents, { short: true })}
               </span>
             </a>
           </Popup>

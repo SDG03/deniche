@@ -40,18 +40,35 @@ export default async function PartnerActivities() {
                 className="group flex items-center gap-4 rounded-[var(--radius-card)] border border-line bg-paper p-3 hover:border-ink/30"
               >
                 <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-sand">
-                  <Image src={(a.images as string[])[0]} alt={imageAlt(a.title, a.category)} fill sizes="80px" className="object-cover" />
+                  <Image
+                    src={(a.images as string[])[0]}
+                    alt={imageAlt(a.title, a.category)}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-xs font-medium text-ink-mute">
                     {getCategory(a.category).label}
-                    {!a.published && <span className="rounded-full bg-sand px-2 py-0.5 text-2xs font-semibold text-ink-soft">Brouillon</span>}
-                    {!a.lastMinuteEnabled && <span className="rounded-full bg-sand px-2 py-0.5 text-2xs font-semibold text-ink-soft">Prix fixe</span>}
+                    {!a.published && (
+                      <span className="rounded-full bg-sand px-2 py-0.5 text-2xs font-semibold text-ink-soft">
+                        {copy.partnerUi.activities.draft}
+                      </span>
+                    )}
+                    {!a.lastMinuteEnabled && (
+                      <span className="rounded-full bg-sand px-2 py-0.5 text-2xs font-semibold text-ink-soft">
+                        {copy.partnerUi.activities.fixedPrice}
+                      </span>
+                    )}
                   </div>
                   <h2 className="mt-0.5 line-clamp-2 font-display text-lg leading-snug font-bold">{a.title}</h2>
                   <div className="mt-1 text-sm text-ink-soft">
-                    {formatPrice(a.basePriceCents, { short: true })} · {a.slots.length} créneaux cette semaine ·{" "}
-                    {cap ? Math.round((booked / cap) * 100) : 0} % rempli
+                    {copy.partnerUi.activities.summary(
+                      formatPrice(a.basePriceCents, { short: true }),
+                      a.slots.length,
+                      cap ? Math.round((booked / cap) * 100) : 0,
+                    )}
                   </div>
                 </div>
                 <ChevronRight aria-hidden className="size-5 shrink-0 text-ink-mute" />

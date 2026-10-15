@@ -20,9 +20,12 @@ const CATS = {
 };
 
 const shapes = [
-  (a) => `<circle cx="980" cy="210" r="260" fill="${a}" opacity=".9"/><path d="M0 760 C 300 600 520 820 820 680 S 1200 600 1200 600 V900 H0Z" fill="#FAF7F2" opacity=".12"/>`,
-  (a) => `<path d="M-40 900 L420 330 L700 640 L900 420 L1240 900Z" fill="${a}" opacity=".85"/><circle cx="260" cy="200" r="90" fill="#FAF7F2" opacity=".16"/>`,
-  (a) => `<rect x="720" y="-80" width="560" height="560" rx="120" transform="rotate(18 1000 200)" fill="${a}" opacity=".85"/><path d="M0 820 Q 600 640 1200 820 V900 H0Z" fill="#FAF7F2" opacity=".14"/>`,
+  (a) =>
+    `<circle cx="980" cy="210" r="260" fill="${a}" opacity=".9"/><path d="M0 760 C 300 600 520 820 820 680 S 1200 600 1200 600 V900 H0Z" fill="#FAF7F2" opacity=".12"/>`,
+  (a) =>
+    `<path d="M-40 900 L420 330 L700 640 L900 420 L1240 900Z" fill="${a}" opacity=".85"/><circle cx="260" cy="200" r="90" fill="#FAF7F2" opacity=".16"/>`,
+  (a) =>
+    `<rect x="720" y="-80" width="560" height="560" rx="120" transform="rotate(18 1000 200)" fill="${a}" opacity=".85"/><path d="M0 820 Q 600 640 1200 820 V900 H0Z" fill="#FAF7F2" opacity=".14"/>`,
 ];
 
 for (const [slug, [label, bg, accent]] of Object.entries(CATS)) {

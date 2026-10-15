@@ -13,15 +13,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </main>
       <footer className="hidden border-t border-line md:block">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-6 text-sm text-ink-mute">
-          <span>© Déniche — projet étudiant Startech, HELMo Gramme</span>
+          <span>{copy.footer.credit}</span>
           <Link href="/legal/cgv" className="hover:text-ink">
-            CGV
+            {copy.footer.cgv}
           </Link>
           <Link href="/legal/confidentialite" className="hover:text-ink">
-            Confidentialité
+            {copy.footer.privacy}
           </Link>
           <Link href="/legal/annulation" className="hover:text-ink">
-            Annulation
+            {copy.footer.cancellation}
           </Link>
           <Link href="/partenaire" className="ml-auto font-medium text-forest hover:underline">
             {copy.nav.partner}

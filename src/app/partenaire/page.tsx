@@ -9,6 +9,8 @@ import { dayKey, formatPrice, inBrussels, startOfBrusselsDay } from "@/lib/forma
 import { getPartnerBookings, getPartnerStats } from "@/lib/partner";
 import { BookingRow } from "./booking-row";
 
+const d = copy.partnerUi.dashboard;
+
 export const metadata = { title: copy.partner.dashboard };
 
 const pct = (n: number) => `${Math.round(n * 100)} %`;
@@ -24,7 +26,9 @@ export default async function PartnerDashboard() {
     getPartnerBookings(partnerId, { from: todayStart, to: tomorrowStart, orderBy: "slot", take: 50 }),
   ]);
   const s = copy.partner.stats;
-  const arrivals = today.filter((b) => b.status !== "CANCELLED" && b.slot.startsAt.getTime() > now.getTime() - 3 * 3_600_000).slice(0, 8);
+  const arrivals = today
+    .filter((b) => b.status !== "CANCELLED" && b.slot.startsAt.getTime() > now.getTime() - 3 * 3_600_000)
+    .slice(0, 8);
 
   return (
     <div className="space-y-10">
@@ -37,17 +41,21 @@ export default async function PartnerDashboard() {
           <span className="text-sm text-ink-mute">{s.period}</span>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Stat label={s.fill} value={pct(stats.fillRate)} hint={`${stats.seats} places vendues`} />
-          <Stat label={s.revenue} value={formatPrice(stats.revenueCents, { short: true })} hint={`${stats.bookings} réservations`} />
-          <Stat label={s.lastMinute} value={pct(stats.lastMinuteShare)} hint="réservées moins de 24 h avant" />
-          <Stat label="Réductions accordées" value={formatPrice(stats.savedCents, { short: true })} hint="sur des places qui seraient restées vides" />
+          <Stat label={s.fill} value={pct(stats.fillRate)} hint={d.soldSeats(stats.seats)} />
+          <Stat
+            label={s.revenue}
+            value={formatPrice(stats.revenueCents, { short: true })}
+            hint={d.bookingsCount(stats.bookings)}
+          />
+          <Stat label={s.lastMinute} value={pct(stats.lastMinuteShare)} hint={d.lastMinuteHint} />
+          <Stat label={d.discounts} value={formatPrice(stats.savedCents, { short: true })} hint={d.discountsHint} />
         </div>
       </section>
 
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
         <section aria-labelledby="today">
           <h2 id="today" className="font-display text-xl font-bold">
-            Arrivées du jour
+            {d.arrivals}
           </h2>
           {arrivals.length ? (
             <ul className="mt-3 divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper">
@@ -57,14 +65,17 @@ export default async function PartnerDashboard() {
             </ul>
           ) : (
             <div className="mt-3">
-              <EmptyState icon={<Inbox className="size-6" />} title="Personne aujourd'hui" body="Profites-en pour régler tes réductions : un créneau vide ne rapporte rien." />
+              <EmptyState icon={<Inbox className="size-6" />} title={d.noArrivalsTitle} body={d.noArrivalsBody} />
             </div>
           )}
 
           <div className="mt-8 flex items-baseline justify-between">
-            <h2 className="font-display text-xl font-bold">Dernières réservations</h2>
-            <Link href="/partenaire/reservations" className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-forest">
-              Tout voir <ArrowRight aria-hidden className="size-4" />
+            <h2 className="font-display text-xl font-bold">{d.latest}</h2>
+            <Link
+              href="/partenaire/reservations"
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-forest"
+            >
+              {copy.common.seeAll} <ArrowRight aria-hidden className="size-4" />
             </Link>
           </div>
           <ul className="mt-1 divide-y divide-line overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper">
@@ -76,21 +87,24 @@ export default async function PartnerDashboard() {
 
         <section aria-labelledby="per-activity">
           <h2 id="per-activity" className="font-display text-xl font-bold">
-            Remplissage par activité
+            {d.perActivity}
           </h2>
-          <p className="text-sm text-ink-mute">{s.period}, créneaux passés</p>
+          <p className="text-sm text-ink-mute">{d.perActivitySub}</p>
           <ul className="mt-4 space-y-4">
             {stats.perActivity.map((a) => (
-              <li key={a.id} title={`${a.title} : ${pct(a.fillRate)} (${a.seats} places, ${formatPrice(a.revenueCents)})`}>
+              <li key={a.id} title={d.barTitle(a.title, pct(a.fillRate), a.seats, formatPrice(a.revenueCents))}>
                 <div className="flex items-baseline justify-between gap-3 text-sm">
                   <span className="truncate font-medium">{a.title}</span>
                   <span className="tabular shrink-0 font-semibold">{pct(a.fillRate)}</span>
                 </div>
                 <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-sand" role="presentation">
-                  <div className="h-full rounded-full bg-forest" style={{ width: `${Math.max(2, a.fillRate * 100)}%` }} />
+                  <div
+                    className="h-full rounded-full bg-forest"
+                    style={{ width: `${Math.max(2, a.fillRate * 100)}%` }}
+                  />
                 </div>
                 <div className="mt-1 text-xs text-ink-mute">
-                  {a.seats} places · {formatPrice(a.revenueCents, { short: true })}
+                  {d.seatsRevenue(a.seats, formatPrice(a.revenueCents, { short: true }))}
                 </div>
               </li>
             ))}

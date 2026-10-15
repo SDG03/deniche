@@ -1,4 +1,17 @@
-import { Accessibility, Car, Clock, Gauge, MapPin, Navigation, ShieldCheck, Sparkles, Star, Sun, Users, Baby } from "lucide-react";
+import {
+  Accessibility,
+  Car,
+  Clock,
+  Gauge,
+  MapPin,
+  Navigation,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Sun,
+  Users,
+  Baby,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -51,7 +64,10 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
     .filter((a) => a.id !== summary.id && a.nextSlot)
     .map((a) => ({
       a,
-      score: (a.category === summary.category ? 3 : 0) + a.tags.filter((tag) => summary.tags.includes(tag)).length - a.distanceKm / 50,
+      score:
+        (a.category === summary.category ? 3 : 0) +
+        a.tags.filter((tag) => summary.tags.includes(tag)).length -
+        a.distanceKm / 50,
     }))
     .sort((x, y) => y.score - x.score)
     .slice(0, 3)
@@ -73,11 +89,22 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
       <MobileHeader
         back="/explorer"
         title={activity.title}
-        action={<FavoriteButton activityId={activity.id} initial={favorites.has(activity.id)} title={activity.title} className="bg-transparent" />}
+        action={
+          <FavoriteButton
+            activityId={activity.id}
+            initial={favorites.has(activity.id)}
+            title={activity.title}
+            className="bg-transparent"
+          />
+        }
       />
 
       <div className="mx-auto max-w-6xl md:px-6 md:pt-8">
-        <Gallery images={images} alts={images.map((_, i) => imageAlt(activity.title, activity.category, i))} credits={credits} />
+        <Gallery
+          images={images}
+          alts={images.map((_, i) => imageAlt(activity.title, activity.category, i))}
+          credits={credits}
+        />
 
         <div className="md:mt-8 md:grid md:grid-cols-[minmax(0,1fr)_400px] md:gap-10">
           {/* Colonne contenu */}
@@ -85,10 +112,10 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
             {(fromSurprise || sharedSlot) && (
               <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-forest-soft px-3.5 py-2 text-sm font-semibold text-forest">
                 <Sparkles aria-hidden className="size-4" />
-                {fromSurprise ? "Tirée au sort pour toi. Pas convaincu ?" : t.sharedSlot}
+                {fromSurprise ? t.surpriseNote : t.sharedSlot}
                 {fromSurprise && (
                   <a href={`/surprise?sauf=${slug}`} className="underline underline-offset-2">
-                    Relancer
+                    {t.reroll}
                   </a>
                 )}
               </p>
@@ -100,7 +127,12 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
             <div className="mt-1 flex items-start justify-between gap-4">
               <h1 className="font-display text-[2rem] leading-[1.08] font-bold md:text-[2.75rem]">{activity.title}</h1>
               <div className="hidden md:block">
-                <FavoriteButton activityId={activity.id} initial={favorites.has(activity.id)} title={activity.title} className="border border-line" />
+                <FavoriteButton
+                  activityId={activity.id}
+                  initial={favorites.has(activity.id)}
+                  title={activity.title}
+                  className="border border-line"
+                />
               </div>
             </div>
             <p className="mt-2 text-lg text-ink-soft">{activity.tagline}</p>
@@ -196,12 +228,17 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
                 />
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <a href={directions} target="_blank" rel="noreferrer" className={buttonClass({ variant: "outline", size: "sm" })}>
+                <a
+                  href={directions}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={buttonClass({ variant: "outline", size: "sm" })}
+                >
                   <Navigation aria-hidden className="size-4" />
                   {t.openMaps}
                 </a>
                 <span className="text-sm text-ink-mute">
-                  {formatKm(summary.distanceKm)} · {copy.card.drive(summary.driveMin)} (estimation)
+                  {formatKm(summary.distanceKm)} · {copy.card.drive(summary.driveMin)} {t.estimate}
                 </span>
               </div>
             </section>
@@ -212,16 +249,22 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
                   <h2 id="reviews" className="font-display text-[1.375rem] font-bold">
                     {t.reviews}
                   </h2>
-                  <span className="rounded-full bg-sand px-2.5 py-1 text-2xs font-semibold text-ink-soft">{t.reviewsMock}</span>
+                  <span className="rounded-full bg-sand px-2.5 py-1 text-2xs font-semibold text-ink-soft">
+                    {t.reviewsMock}
+                  </span>
                 </div>
                 <ul className="mt-3 grid gap-3 sm:grid-cols-2">
                   {activity.reviews.map((r) => (
                     <li key={r.id} className="rounded-2xl border border-line bg-paper p-4">
                       <div className="flex items-center justify-between">
                         <span className="font-semibold">{r.authorName}</span>
-                        <span className="flex gap-0.5" aria-label={`${r.rating} sur 5`}>
+                        <span className="flex gap-0.5" aria-label={copy.common.outOf5(r.rating)}>
                           {[1, 2, 3, 4, 5].map((n) => (
-                            <Star key={n} aria-hidden className={`size-3.5 ${n <= r.rating ? "fill-ink text-ink" : "text-line-strong"}`} />
+                            <Star
+                              key={n}
+                              aria-hidden
+                              className={`size-3.5 ${n <= r.rating ? "fill-ink text-ink" : "text-line-strong"}`}
+                            />
                           ))}
                         </span>
                       </div>
@@ -263,7 +306,7 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
         )}
         <p className="mt-10 px-4 text-center text-xs text-ink-mute md:px-0">
           <Link href="/legal/annulation" className="underline underline-offset-2">
-            Politique d&apos;annulation
+            {t.cancellationLink}
           </Link>
         </p>
       </div>

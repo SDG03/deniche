@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { copy } from "@/lib/copy";
 
 /**
  * Bottom sheet basé sur <dialog> natif : piège à focus, Échap et
@@ -42,13 +43,16 @@ export function BottomSheet({
     >
       <div className="flex max-h-[88dvh] flex-col">
         <div className="relative flex items-center justify-between border-b border-line px-5 pt-3 pb-3">
-          <span aria-hidden className="absolute top-1.5 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-line-strong md:hidden" />
+          <span
+            aria-hidden
+            className="absolute top-1.5 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-line-strong md:hidden"
+          />
           <h2 className="mt-2 font-display text-lg font-bold">{title}</h2>
           <button
             type="button"
             onClick={onClose}
             className="mt-2 grid size-11 place-items-center rounded-full hover:bg-ink/5"
-            aria-label="Fermer"
+            aria-label={copy.common.close}
           >
             <X className="size-5" aria-hidden />
           </button>

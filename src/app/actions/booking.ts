@@ -17,9 +17,9 @@ export type CheckoutState = { error?: string };
 const ERRORS: Record<string, string> = {
   sold_out: copy.booking.soldOut,
   closed: copy.booking.closedNow,
-  race: "Le prix de ce créneau vient de bouger. Vérifie et réessaie.",
-  people: "Ce nombre de participants n'est pas accepté pour cette activité.",
-  not_found: "Ce créneau n'existe plus.",
+  race: copy.errors.race,
+  people: copy.errors.people,
+  not_found: copy.errors.slotGone,
   expired: copy.booking.lockExpired,
 };
 
@@ -32,7 +32,7 @@ const startSchema = z.object({
 /** Clic 2 : « Réserver » → prix recalculé, places bloquées, prix verrouillé 10 min. */
 export async function startCheckout(_: CheckoutState, formData: FormData): Promise<CheckoutState> {
   const parsed = startSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: "Choisis d'abord un créneau." };
+  if (!parsed.success) return { error: copy.errors.pickSlot };
   const { slotId, people, slug } = parsed.data;
   const user = await getCurrentUser();
   if (!user) redirect(`/connexion?next=${encodeURIComponent(`/activite/${slug}?creneau=${slotId}`)}&raison=reserver`);
@@ -52,7 +52,7 @@ const payerSchema = z.object({
   bookingId: z.string().min(1).max(40),
   method: z.enum(["card", "bancontact"]),
   cardNumber: z.string().max(30).optional(),
-  names: z.array(z.string().trim().min(1, "Il manque un prénom.").max(40)),
+  names: z.array(z.string().trim().min(1, copy.errors.missingName).max(40)),
 });
 
 export type PayState = { error?: string };
@@ -66,17 +66,17 @@ export async function payBooking(_: PayState, formData: FormData): Promise<PaySt
     cardNumber: formData.get("cardNumber") ?? undefined,
     names: formData.getAll("names").map(String),
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Formulaire incomplet." };
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? copy.errors.incompleteForm };
   const { bookingId, method, cardNumber, names } = parsed.data;
 
   const booking = await getBookingForUser(bookingId, user.id);
-  if (!booking) return { error: "Réservation introuvable." };
+  if (!booking) return { error: copy.errors.bookingNotFound };
   if (booking.status === "CONFIRMED") redirect(`/reservation/${booking.id}`);
   if (booking.status !== "PENDING" || booking.priceLockedUntil < new Date()) {
     if (booking.status === "PENDING") await releaseHold(booking.id, "EXPIRED");
     return { error: copy.booking.lockExpired };
   }
-  if (names.length !== booking.people) return { error: "Indique un prénom par participant." };
+  if (names.length !== booking.people) return { error: copy.errors.namePerParticipant };
 
   await db.booking.update({ where: { id: booking.id }, data: { participantNames: names } });
 
@@ -99,7 +99,11 @@ export async function payBooking(_: PayState, formData: FormData): Promise<PaySt
     // Le client est chez Stripe : on prolonge le blocage jusqu'à l'expiration de la session Stripe (31 min).
     await db.booking.update({
       where: { id: booking.id },
-      data: { paymentProvider: provider.id, paymentRef: result.ref, priceLockedUntil: new Date(Date.now() + 31 * 60_000) },
+      data: {
+        paymentProvider: provider.id,
+        paymentRef: result.ref,
+        priceLockedUntil: new Date(Date.now() + 31 * 60_000),
+      },
     });
     redirect(result.url);
   }

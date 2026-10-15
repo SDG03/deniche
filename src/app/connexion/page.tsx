@@ -15,12 +15,12 @@ const t = copy.auth;
 export default async function LoginPage({ searchParams }: PageProps<"/connexion">) {
   const sp = await searchParams;
   const next = safeNext(typeof sp.next === "string" ? sp.next : undefined);
-  const error = sp.erreur === "lien" ? t.invalid : sp.erreur === "seed" ? "Base vide : lance « npm run seed »." : null;
-  const reason = sp.raison === "reserver" ? copy.booking.loginNeeded : sp.partenaire ? "Cet espace est réservé aux partenaires." : null;
+  const error = sp.erreur === "lien" ? t.invalid : sp.erreur === "seed" ? t.emptyDb : null;
+  const reason = sp.raison === "reserver" ? copy.booking.loginNeeded : sp.partenaire ? t.partnerOnly : null;
 
   return (
     <main id="contenu" className="mx-auto flex min-h-[calc(100dvh-24px)] max-w-md flex-col px-5 py-8">
-      <Link href="/" className="self-start" aria-label="Déniche, accueil">
+      <Link href="/" className="self-start" aria-label={copy.common.homeLink}>
         <Logo />
       </Link>
 
@@ -61,7 +61,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/connexion"
           </button>
         </form>
       </div>
-      <p className="mt-6 text-center text-xs text-ink-mute">Camille (démo) et Alex (démo) sont des comptes fictifs.</p>
+      <p className="mt-6 text-center text-xs text-ink-mute">{t.demoNote}</p>
     </main>
   );
 }

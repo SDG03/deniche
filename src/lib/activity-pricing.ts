@@ -2,7 +2,15 @@ import { z } from "zod";
 import { computePrice, DEFAULT_TIERS, type DiscountTier } from "./pricing";
 
 export const tiersSchema = z
-  .array(z.object({ minHours: z.number().min(0).max(24 * 14), pct: z.number().int().min(0).max(90) }))
+  .array(
+    z.object({
+      minHours: z
+        .number()
+        .min(0)
+        .max(24 * 14),
+      pct: z.number().int().min(0).max(90),
+    }),
+  )
   .min(1)
   .max(8);
 

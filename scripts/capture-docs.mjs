@@ -57,7 +57,12 @@ for (const kind of ["mobile", "desktop"]) {
   await page.goto(`${B}/activite/kayak-ourthe-durbuy`, { waitUntil: "networkidle" });
   await shot(page, "06-fiche", kind);
   const picker = page.locator(kind === "mobile" ? "section[aria-labelledby=creneaux]" : "aside");
-  await picker.getByRole("list", { name: "Créneaux" }).getByRole("button", { disabled: false }).filter({ hasText: "€" }).first().click();
+  await picker
+    .getByRole("list", { name: "Créneaux" })
+    .getByRole("button", { disabled: false })
+    .filter({ hasText: "€" })
+    .first()
+    .click();
   await shot(page, "07-creneaux", kind, { scrollTo: kind === "mobile" ? "#creneaux" : null });
   await page.getByRole("button", { name: "Une personne de plus" }).filter({ visible: true }).click();
   await page.getByRole("button", { name: "Réserver", exact: true }).filter({ visible: true }).click();

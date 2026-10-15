@@ -24,7 +24,7 @@ export function TabBar() {
   const pathname = usePathname();
   return (
     <nav
-      aria-label="Navigation principale"
+      aria-label={copy.common.mainNav}
       className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-cream/95 backdrop-blur md:hidden"
     >
       <ul className="mx-auto flex h-[var(--tabbar-h)] max-w-md items-stretch justify-around px-1">
@@ -40,7 +40,12 @@ export function TabBar() {
                   active ? "text-forest" : "text-ink-mute hover:text-ink",
                 )}
               >
-                <Icon aria-hidden className="size-[22px]" strokeWidth={active ? 2.25 : 1.75} fill={active && href === "/favoris" ? "currentColor" : "none"} />
+                <Icon
+                  aria-hidden
+                  className="size-[22px]"
+                  strokeWidth={active ? 2.25 : 1.75}
+                  fill={active && href === "/favoris" ? "currentColor" : "none"}
+                />
                 <span>{label}</span>
               </Link>
             </li>
@@ -57,10 +62,10 @@ export function TopNav({ isPartner }: { isPartner?: boolean }) {
   return (
     <header className="sticky top-0 z-40 hidden border-b border-line bg-cream/90 backdrop-blur md:block">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-8 px-6">
-        <Link href="/" aria-label="Déniche, accueil" className="shrink-0">
+        <Link href="/" aria-label={copy.common.homeLink} className="shrink-0">
           <Logo />
         </Link>
-        <nav aria-label="Navigation principale" className="flex flex-1 items-center gap-1">
+        <nav aria-label={copy.common.mainNav} className="flex flex-1 items-center gap-1">
           {TABS.map(({ href, label }) => {
             const active = isActive(pathname, href);
             return (

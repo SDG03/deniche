@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  applyDiscount,
-  computePrice,
-  DEFAULT_TIERS,
-  discountedSeatsLeft,
-  priceCurve,
-  quoteBooking,
-} from "./pricing";
+import { applyDiscount, computePrice, DEFAULT_TIERS, discountedSeatsLeft, priceCurve, quoteBooking } from "./pricing";
 
 const H = 3_600_000;
 const startsAt = new Date("2026-11-14T14:00:00Z");
@@ -126,7 +119,9 @@ describe("remplissage", () => {
 
   it("explique l'absence de réduction", () => {
     expect(computePrice({ ...base, fillRate: 0.9, now: at(1) }).tierLabel).toMatch(/Presque complet/);
-    expect(computePrice({ ...base, now: at(1), quota: { capacity: 4, discountedSold: 2 } }).tierLabel).toMatch(/prix réduit/);
+    expect(computePrice({ ...base, now: at(1), quota: { capacity: 4, discountedSold: 2 } }).tierLabel).toMatch(
+      /prix réduit/,
+    );
     expect(computePrice({ ...base, now: at(100) }).tierLabel).toBe("Plein tarif");
   });
 

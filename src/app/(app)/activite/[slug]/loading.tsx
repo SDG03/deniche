@@ -1,8 +1,9 @@
 import { Skeleton } from "@/components/ui/primitives";
+import { copy } from "@/lib/copy";
 
 export default function Loading() {
   return (
-    <div className="mx-auto max-w-6xl md:px-6 md:pt-8" aria-busy="true" aria-label="Chargement">
+    <div className="mx-auto max-w-6xl md:px-6 md:pt-8" aria-busy="true" aria-label={copy.common.loading}>
       <Skeleton className="aspect-[4/3] w-full rounded-none md:aspect-auto md:h-[440px] md:rounded-[var(--radius-card)]" />
       <div className="px-4 md:grid md:grid-cols-[minmax(0,1fr)_400px] md:gap-10 md:px-0">
         <div>

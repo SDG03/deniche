@@ -8,7 +8,10 @@ import { copy } from "@/lib/copy";
 import { db } from "@/lib/db";
 import { PartnerNav } from "./partner-nav";
 
-export const metadata: Metadata = { title: { default: copy.partner.title, template: `%s · Partenaire · Déniche` }, robots: { index: false } };
+export const metadata: Metadata = {
+  title: { default: copy.partner.title, template: `%s · ${copy.partnerUi.metaSuffix}` },
+  robots: { index: false },
+};
 
 export default async function PartnerLayout({ children }: { children: React.ReactNode }) {
   const { user, partnerId } = await requirePartner();
@@ -18,8 +21,8 @@ export default async function PartnerLayout({ children }: { children: React.Reac
       <header className="bg-forest text-cream">
         <div className="mx-auto max-w-6xl px-4 pt-3 pb-3 md:px-6 md:pt-5">
           <div className="flex items-center gap-3">
-            <Link href="/partenaire" aria-label="Espace partenaire, tableau de bord">
-              <LogoMark className="size-9 [&>rect]:fill-cream [&>path]:fill-forest" />
+            <Link href="/partenaire" aria-label={copy.partnerUi.homeLink}>
+              <LogoMark className="size-9 [&>path]:fill-forest [&>rect]:fill-cream" />
             </Link>
             <div className="min-w-0 flex-1">
               <div className="text-2xs font-semibold tracking-wide text-cream/70 uppercase">{copy.partner.title}</div>
@@ -29,10 +32,14 @@ export default async function PartnerLayout({ children }: { children: React.Reac
               href="/"
               className="hidden min-h-11 items-center gap-1 rounded-full px-3 text-sm font-semibold text-cream/80 hover:bg-cream/10 hover:text-cream sm:inline-flex"
             >
-              Voir l&apos;appli <ArrowUpRight aria-hidden className="size-4" />
+              {copy.partnerUi.seeApp} <ArrowUpRight aria-hidden className="size-4" />
             </Link>
             <form action={logout}>
-              <button type="submit" aria-label={`${copy.auth.logout} (${user.name})`} className="grid size-11 place-items-center rounded-full hover:bg-cream/10">
+              <button
+                type="submit"
+                aria-label={copy.partnerUi.logoutAs(user.name)}
+                className="grid size-11 place-items-center rounded-full hover:bg-cream/10"
+              >
                 <LogOut aria-hidden className="size-5" />
               </button>
             </form>

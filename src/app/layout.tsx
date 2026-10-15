@@ -20,7 +20,7 @@ const sans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: { default: `${copy.brand.name} · activités originales autour de Liège`, template: `%s · ${copy.brand.name}` },
+  title: { default: copy.meta.defaultTitle, template: `%s · ${copy.brand.name}` },
   description: copy.brand.promise,
   applicationName: copy.brand.name,
   appleWebApp: { capable: true, title: copy.brand.name, statusBarStyle: "default" },

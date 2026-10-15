@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import type { BookingForPayment, PaymentProvider, PaymentResult } from "./types";
+import { copy } from "../copy";
 
 /**
  * Stripe Checkout en mode test (carte + Bancontact). Activé avec
@@ -40,7 +41,7 @@ export class StripeProvider implements PaymentProvider {
       success_url: `${input.baseUrl}/reserver/${booking.id}/retour?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${input.baseUrl}/reserver/${booking.id}`,
     });
-    if (!session.url) return { status: "declined", message: "Stripe n'a pas renvoyé d'URL de paiement." };
+    if (!session.url) return { status: "declined", message: copy.errors.stripeNoUrl };
     return { status: "redirect", url: session.url, ref: session.id };
   }
 

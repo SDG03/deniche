@@ -37,9 +37,12 @@ export default async function CheckoutPage({ params }: PageProps<"/reserver/[id]
     <main id="contenu" className="mx-auto max-w-5xl px-4 pt-4 pb-10 md:px-6 md:pt-10">
       <form action={abandonCheckout}>
         <input type="hidden" name="bookingId" value={booking.id} />
-        <button type="submit" className="-ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-semibold text-ink-soft hover:text-ink">
+        <button
+          type="submit"
+          className="-ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-semibold text-ink-soft hover:text-ink"
+        >
           <ArrowLeft aria-hidden className="size-4" />
-          Changer de créneau
+          {t.changeSlot}
         </button>
       </form>
       <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">{t.title}</h1>
@@ -59,7 +62,10 @@ export default async function CheckoutPage({ params }: PageProps<"/reserver/[id]
           ) : (
             <div className="rounded-2xl border border-line bg-paper p-5">
               <p className="font-semibold">{t.lockExpired}</p>
-              <a href={restartHref} className="mt-3 inline-flex min-h-11 items-center font-semibold text-forest underline underline-offset-4">
+              <a
+                href={restartHref}
+                className="mt-3 inline-flex min-h-11 items-center font-semibold text-forest underline underline-offset-4"
+              >
                 {t.restart}
               </a>
             </div>
@@ -87,7 +93,7 @@ export default async function CheckoutPage({ params }: PageProps<"/reserver/[id]
               </li>
               <li className="flex items-center gap-2">
                 <Users aria-hidden className="size-4 text-ink-mute" />
-                {booking.people} participant{booking.people > 1 ? "s" : ""}
+                {t.participantsCount(booking.people)}
               </li>
               <li className="flex items-start gap-2">
                 <MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-ink-mute" />
@@ -119,10 +125,13 @@ export default async function CheckoutPage({ params }: PageProps<"/reserver/[id]
                 <dt className="font-semibold">{t.total}</dt>
                 <dd className="tabular font-display text-2xl font-bold">{formatPrice(booking.totalCents)}</dd>
               </div>
-              {saved > 0 && <p className="text-right text-sm font-semibold text-coral-ink">{t.saved(formatPrice(saved))}</p>}
+              {saved > 0 && (
+                <p className="text-right text-sm font-semibold text-coral-ink">{t.saved(formatPrice(saved))}</p>
+              )}
             </dl>
             <p className="border-t border-line bg-cream-deep px-4 py-2.5 text-xs text-ink-mute">
-              {t.serverTruth} {copy.activity.cancellation} : {copy.activity.policies[a.cancellationPolicy].toLowerCase()}.
+              {t.serverTruth} {copy.activity.cancellation} :{" "}
+              {copy.activity.policies[a.cancellationPolicy].toLowerCase()}.
             </p>
           </div>
         </aside>

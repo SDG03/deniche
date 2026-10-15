@@ -13,7 +13,7 @@ import { copy } from "@/lib/copy";
 import { formatDayLong, formatPrice, formatTime } from "@/lib/format";
 import { qrPayload, qrSvg } from "@/lib/qr";
 
-export const metadata: Metadata = { title: "Ma réservation", robots: { index: false } };
+export const metadata: Metadata = { title: copy.bookings.detailTitle, robots: { index: false } };
 
 const t = copy.confirmation;
 
@@ -30,7 +30,7 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
   const isNew = sp.nouveau === "1";
   const active = booking.status === "CONFIRMED";
   const svg = active ? await qrSvg(qrPayload(booking.reference, booking.checkinCode)) : null;
-  const when = `${formatDayLong(slot.startsAt)} à ${formatTime(slot.startsAt)}`;
+  const when = copy.common.dayAt(formatDayLong(slot.startsAt), formatTime(slot.startsAt));
   const deadline = cancellationDeadline(a.cancellationPolicy, slot.startsAt);
   const cancellable = active && canCancel(a.cancellationPolicy, slot.startsAt);
   const names = booking.participantNames as string[];
@@ -58,13 +58,17 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
           </div>
         )}
 
-        <article className={cn("overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper", isNew && "mt-8")}>
+        <article
+          className={cn("overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper", isNew && "mt-8")}
+        >
           <div className="px-5 pt-5">
             {!isNew && <h1 className="font-display text-2xl leading-tight font-bold">{a.title}</h1>}
             {isNew && <h2 className="font-display text-xl leading-tight font-bold">{a.title}</h2>}
             <p className="mt-1 text-sm text-ink-mute first-letter:uppercase">{when}</p>
             {statusLabel && (
-              <span className="mt-2 inline-flex rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-ink-soft">{statusLabel}</span>
+              <span className="mt-2 inline-flex rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-ink-soft">
+                {statusLabel}
+              </span>
             )}
           </div>
 
@@ -72,12 +76,14 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             <div className="mx-5 mt-5 flex flex-col items-center rounded-2xl bg-cream px-5 py-6">
               <div
                 role="img"
-                aria-label={`QR code d'arrivée, code ${booking.checkinCode}`}
+                aria-label={copy.bookings.qrLabel(booking.checkinCode)}
                 className="size-48 [&>svg]:size-full"
                 dangerouslySetInnerHTML={{ __html: svg }}
               />
               <div className="mt-4 text-xs font-semibold tracking-wide text-ink-mute uppercase">{t.code}</div>
-              <div data-testid="checkin-code" className="tabular font-display text-3xl font-bold tracking-[0.2em]">{booking.checkinCode}</div>
+              <div data-testid="checkin-code" className="tabular font-display text-3xl font-bold tracking-[0.2em]">
+                {booking.checkinCode}
+              </div>
             </div>
           )}
 
@@ -101,7 +107,7 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             </div>
             <div className="col-span-2 flex items-start gap-2">
               <Users aria-hidden className="mt-0.5 size-4 shrink-0 text-ink-mute" />
-              <dd>{names.length ? names.join(", ") : `${booking.people} participant(s)`}</dd>
+              <dd>{names.length ? names.join(", ") : copy.booking.participantsCount(booking.people)}</dd>
             </div>
             <div className="col-span-2 flex items-start gap-2">
               <MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-ink-mute" />
@@ -118,14 +124,22 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             <ShareButton
               path={`/activite/${a.slug}?creneau=${slot.id}`}
               title={a.title}
-              text={t.shareText(a.title, `le ${when}`)}
+              text={t.shareText(a.title, copy.activity.onDate(when))}
               className="w-full"
             />
-            <a href={`/api/reservations/${booking.id}/ics`} className={buttonClass({ variant: "outline", className: "w-full" })}>
+            <a
+              href={`/api/reservations/${booking.id}/ics`}
+              className={buttonClass({ variant: "outline", className: "w-full" })}
+            >
               <CalendarPlus aria-hidden className="size-4" />
               {t.addCalendar}
             </a>
-            <a href={directions} target="_blank" rel="noreferrer" className={buttonClass({ variant: "outline", className: "w-full" })}>
+            <a
+              href={directions}
+              target="_blank"
+              rel="noreferrer"
+              className={buttonClass({ variant: "outline", className: "w-full" })}
+            >
               <Navigation aria-hidden className="size-4" />
               {t.directions}
             </a>
@@ -139,14 +153,14 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
           <div className="mt-6 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-cream-deep px-4 py-3 text-sm">
             <span className="text-ink-soft">
               {cancellable && deadline
-                ? copy.bookings.cancellableUntil(`${formatDayLong(deadline)} à ${formatTime(deadline)}`)
+                ? copy.bookings.cancellableUntil(copy.common.dayAt(formatDayLong(deadline), formatTime(deadline)))
                 : copy.bookings.cannotCancel}
             </span>
             {cancellable && deadline && (
               <CancelBooking
                 bookingId={booking.id}
                 amount={formatPrice(booking.totalCents)}
-                until={`${formatDayLong(deadline)} à ${formatTime(deadline)}`}
+                until={copy.common.dayAt(formatDayLong(deadline), formatTime(deadline))}
               />
             )}
           </div>

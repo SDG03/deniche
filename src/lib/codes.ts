@@ -15,5 +15,8 @@ export const newCheckinCode = () => randomCode(6);
 export const newToken = () => randomBytes(24).toString("base64url");
 
 export function normalizeCode(input: string) {
-  return input.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "");
+  return input
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9-]/g, "");
 }

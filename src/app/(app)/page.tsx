@@ -33,7 +33,7 @@ export default async function HomePage() {
     <div className="mx-auto max-w-6xl">
       {/* En-tête mobile */}
       <div className="flex items-center justify-between px-4 pt-3 md:hidden">
-        <Link href="/" aria-label="Déniche, accueil" className="flex items-center gap-2">
+        <Link href="/" aria-label={copy.common.homeLink} className="flex items-center gap-2">
           <LogoMark className="size-8" />
           <span className="font-display text-xl font-bold text-forest">Déniche</span>
         </Link>
@@ -120,7 +120,10 @@ export default async function HomePage() {
             title={h.lastMinuteTitle}
             sub={h.lastMinuteSub}
             action={
-              <Link href="/explorer?quand=today&tri=next" className="flex min-h-11 shrink-0 items-center gap-1 text-sm font-semibold text-forest">
+              <Link
+                href="/explorer?quand=today&tri=next"
+                className="flex min-h-11 shrink-0 items-center gap-1 text-sm font-semibold text-forest"
+              >
                 {h.seeAll} <ArrowRight aria-hidden className="size-4" />
               </Link>
             }
@@ -129,12 +132,19 @@ export default async function HomePage() {
         {urgent.length ? (
           <div className="no-scrollbar flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 md:grid md:grid-cols-4 md:gap-5 md:overflow-visible md:px-6 md:[&>*:nth-child(n+5)]:hidden">
             {urgent.map((a, i) => (
-              <ActivityCard key={a.id} activity={a} variant="rail" isFavorite={favorites.has(a.id)} priority={i < 2} now={now} />
+              <ActivityCard
+                key={a.id}
+                activity={a}
+                variant="rail"
+                isFavorite={favorites.has(a.id)}
+                priority={i < 2}
+                now={now}
+              />
             ))}
           </div>
         ) : (
           <div className="px-4 md:px-6">
-            <EmptyState icon={<Timer className="size-6" />} title="Calme plat" body={h.nothingLastMinute} />
+            <EmptyState icon={<Timer className="size-6" />} title={h.calmTitle} body={h.nothingLastMinute} />
           </div>
         )}
       </section>

@@ -1,10 +1,11 @@
 import { ActivityCardSkeleton } from "@/components/activity-card";
 import { Skeleton } from "@/components/ui/primitives";
+import { copy } from "@/lib/copy";
 
 /** Squelette par défaut des pages de l'appli (accueil, favoris, réservations…). */
 export default function Loading() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-6 md:px-6 md:pt-12" aria-busy="true" aria-label="Chargement">
+    <div className="mx-auto max-w-6xl px-4 pt-6 md:px-6 md:pt-12" aria-busy="true" aria-label={copy.common.loading}>
       <Skeleton className="h-4 w-32" />
       <Skeleton className="mt-3 h-12 w-3/4 max-w-md" />
       <Skeleton className="mt-3 h-5 w-2/3 max-w-sm" />

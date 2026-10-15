@@ -1,8 +1,17 @@
 import { cn } from "@/lib/cn";
 import { formatPrice } from "@/lib/format";
+import { copy } from "@/lib/copy";
 
 /** Badge de réduction « −30 % » — corail, réservé aux réductions. */
-export function DiscountBadge({ pct, className, size = "md" }: { pct: number; className?: string; size?: "sm" | "md" }) {
+export function DiscountBadge({
+  pct,
+  className,
+  size = "md",
+}: {
+  pct: number;
+  className?: string;
+  size?: "sm" | "md";
+}) {
   if (pct <= 0) return null;
   return (
     <span
@@ -49,7 +58,10 @@ export function PriceTag({
     <span className={cn("tabular inline-flex items-baseline gap-1.5", className)}>
       {prefix && <span className="text-xs text-ink-mute">{prefix}</span>}
       {discounted && (
-        <s className={cn("text-ink-mute", size === "lg" ? "text-base" : "text-xs")} aria-label={`au lieu de ${formatPrice(baseCents)}`}>
+        <s
+          className={cn("text-ink-mute", size === "lg" ? "text-base" : "text-xs")}
+          aria-label={copy.common.insteadOf(formatPrice(baseCents))}
+        >
           {formatPrice(baseCents, { short: true })}
         </s>
       )}
@@ -82,7 +94,7 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="animate-fade-up flex flex-col items-center rounded-[var(--radius-card)] border border-dashed border-line-strong bg-paper/60 px-6 py-12 text-center">
+    <div className="flex animate-fade-up flex-col items-center rounded-[var(--radius-card)] border border-dashed border-line-strong bg-paper/60 px-6 py-12 text-center">
       <div className="mb-4 grid size-14 place-items-center rounded-full bg-forest-soft text-forest">{icon}</div>
       <h2 className="font-display text-xl font-bold">{title}</h2>
       <p className="mt-1.5 max-w-xs text-sm text-ink-mute">{body}</p>

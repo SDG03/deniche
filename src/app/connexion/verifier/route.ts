@@ -16,7 +16,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/connexion?erreur=lien", req.url));
   }
   const { email } = await db.loginToken.findUniqueOrThrow({ where: { token } });
-  const name = email.split("@")[0].replace(/[._-]+/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+  const name = email
+    .split("@")[0]
+    .replace(/[._-]+/g, " ")
+    .replace(/^\w/, (c) => c.toUpperCase());
   const user = await db.user.upsert({ where: { email }, update: {}, create: { email, name } });
   await startSession(user.id);
   return NextResponse.redirect(new URL(next, req.url));

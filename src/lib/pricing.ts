@@ -8,6 +8,8 @@
  * ne décale jamais un palier.
  */
 
+import { copy } from "./copy";
+
 export type DiscountTier = {
   /** Le palier s'applique quand il reste au moins `minHours` heures. */
   minHours: number;
@@ -133,22 +135,22 @@ export function applyDiscount(basePriceCents: number, discountPct: number, floor
 }
 
 export function tierLabelFor(pct: number, minHours: number, upper: number | null, fillBonus: boolean): string {
-  if (pct === 0) return "Plein tarif";
+  if (pct === 0) return copy.pricingLabels.full;
   const range =
     upper === null
-      ? `Plus de ${minHours} h avant`
+      ? copy.pricingLabels.above(minHours)
       : minHours === 0
-        ? `Moins de ${upper} h avant`
-        : `Entre ${minHours} h et ${upper} h avant`;
-  return fillBonus ? `${range} · bonus créneau calme` : range;
+        ? copy.pricingLabels.below(upper)
+        : copy.pricingLabels.between(minHours, upper);
+  return fillBonus ? `${range} · ${copy.pricingLabels.calmBonus}` : range;
 }
 
 /** Explique pourquoi un créneau reste au plein tarif alors que le palier prévoit une réduction. */
 function explainZero(ctx: DiscountContext, tierPct: number): string | null {
   if (tierPct <= 0) return null;
-  if (!ctx.lastMinuteEnabled) return "Prix fixe (pas de dernière minute)";
-  if (ctx.quotaReached) return "Plus de places à prix réduit";
-  if (ctx.fillRate > PRICING_DEFAULTS.highFillThreshold) return "Presque complet : pas de réduction";
+  if (!ctx.lastMinuteEnabled) return copy.pricingLabels.fixed;
+  if (ctx.quotaReached) return copy.pricingLabels.quotaReached;
+  if (ctx.fillRate > PRICING_DEFAULTS.highFillThreshold) return copy.pricingLabels.almostFull;
   return null;
 }
 
@@ -217,7 +219,9 @@ export function computePrice(input: PriceInput): PriceResult {
   return {
     unitPriceCents,
     discountPct: current.pct,
-    tierLabel: explainZero(ctx, current.tier.pct) ?? tierLabelFor(current.pct, current.tier.minHours, current.upper, current.fillBonusApplied),
+    tierLabel:
+      explainZero(ctx, current.tier.pct) ??
+      tierLabelFor(current.pct, current.tier.minHours, current.upper, current.fillBonusApplied),
     nextChangeAt,
     nextDiscountPct,
     basePriceCents,
@@ -245,8 +249,7 @@ export type BookingQuote = {
  */
 export function quoteBooking(price: PriceResult, people: number): BookingQuote {
   if (!Number.isInteger(people) || people < 1) throw new Error("Nombre de personnes invalide");
-  const discounted =
-    price.discountPct > 0 ? Math.min(people, price.discountedSeatsLeft ?? people) : 0;
+  const discounted = price.discountPct > 0 ? Math.min(people, price.discountedSeatsLeft ?? people) : 0;
   const full = people - discounted;
   return {
     people,

@@ -23,12 +23,25 @@ const rand = () => {
   state = (state * 1664525 + 1013904223) % 4294967296;
   return state / 4294967296;
 };
-const pick = <T,>(arr: readonly T[]) => arr[Math.floor(rand() * arr.length)];
+const pick = <T>(arr: readonly T[]) => arr[Math.floor(rand() * arr.length)];
 
 const H = 3_600_000;
 const FUTURE_DAYS = 21;
 const PAST_DAYS = 14;
-const FIRST_NAMES = ["Lucie", "Thomas", "Inès", "Julien", "Sarah", "Maxime", "Nora", "Hugo", "Emma", "Arthur", "Léa", "Noah"];
+const FIRST_NAMES = [
+  "Lucie",
+  "Thomas",
+  "Inès",
+  "Julien",
+  "Sarah",
+  "Maxime",
+  "Nora",
+  "Hugo",
+  "Emma",
+  "Arthur",
+  "Léa",
+  "Noah",
+];
 
 function imagesFor(slug: string, category: string) {
   const credits: Record<string, { file: string; author: string; license: string; source: string }[]> = (() => {

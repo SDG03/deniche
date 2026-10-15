@@ -16,7 +16,7 @@ const ITEMS = [
 export function PartnerNav() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Espace partenaire" className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto px-4 md:mx-0 md:px-0">
+    <nav aria-label={copy.partnerUi.nav} className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto px-4 md:mx-0 md:px-0">
       {ITEMS.map(({ href, label, icon: Icon }) => {
         const active = href === "/partenaire" ? pathname === href : pathname.startsWith(href);
         return (

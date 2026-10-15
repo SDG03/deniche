@@ -12,7 +12,10 @@ export async function GET(_: Request, ctx: RouteContext<"/media/[file]">) {
   try {
     const buf = await fs.readFile(path.join(DIR, file));
     return new NextResponse(new Uint8Array(buf), {
-      headers: { "Content-Type": TYPES[file.split(".").pop()!], "Cache-Control": "public, max-age=31536000, immutable" },
+      headers: {
+        "Content-Type": TYPES[file.split(".").pop()!],
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
     });
   } catch {
     return new NextResponse(null, { status: 404 });

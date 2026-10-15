@@ -92,7 +92,10 @@ export function ExplorerControls({
       <div className="flex gap-2">
         <label className="relative flex-1">
           <span className="sr-only">{t.searchLabel}</span>
-          <Search aria-hidden className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-ink-mute" />
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-ink-mute"
+          />
           <input
             type="search"
             value={q}
@@ -112,7 +115,7 @@ export function ExplorerControls({
           {activeCount > 0 && (
             <span className="tabular grid size-5 place-items-center rounded-full bg-forest text-2xs text-cream">
               {activeCount}
-              <span className="sr-only"> filtres actifs</span>
+              <span className="sr-only"> {t.activeFilters}</span>
             </span>
           )}
         </button>
@@ -120,7 +123,10 @@ export function ExplorerControls({
 
       <div className="mt-3 flex items-center justify-between gap-3">
         <div className="no-scrollbar -mx-4 flex flex-1 gap-2 overflow-x-auto px-4 md:mx-0 md:px-0">
-          <Chip selected={params.get("quand") === "today"} onClick={() => setParam("quand", params.get("quand") === "today" ? undefined : "today")}>
+          <Chip
+            selected={params.get("quand") === "today"}
+            onClick={() => setParam("quand", params.get("quand") === "today" ? undefined : "today")}
+          >
             {copy.home.quickWhen.today}
           </Chip>
           <Chip
@@ -135,7 +141,10 @@ export function ExplorerControls({
           >
             {copy.home.quickWhen.weekend}
           </Chip>
-          <Chip selected={params.get("cadre") === "INDOOR"} onClick={() => setParam("cadre", params.get("cadre") === "INDOOR" ? undefined : "INDOOR")}>
+          <Chip
+            selected={params.get("cadre") === "INDOOR"}
+            onClick={() => setParam("cadre", params.get("cadre") === "INDOOR" ? undefined : "INDOOR")}
+          >
             {t.filter.settings.INDOOR}
           </Chip>
         </div>
@@ -159,7 +168,11 @@ export function ExplorerControls({
               <option value="next">{t.sort.next}</option>
             </select>
           </label>
-          <div role="group" aria-label="Affichage" className="flex rounded-full border border-line-strong bg-paper p-0.5">
+          <div
+            role="group"
+            aria-label={t.display}
+            className="flex rounded-full border border-line-strong bg-paper p-0.5"
+          >
             <button
               type="button"
               aria-pressed={view === "liste"}
@@ -245,7 +258,7 @@ export function ExplorerControls({
           <div className="flex items-center gap-4">
             <button
               type="button"
-              aria-label="Une personne de moins"
+              aria-label={copy.common.lessPerson}
               disabled={people <= 1}
               onClick={() => setDraft((d) => ({ ...d, personnes: people - 1 > 1 ? String(people - 1) : undefined }))}
               className="grid size-11 place-items-center rounded-full border border-line-strong bg-paper disabled:opacity-40"
@@ -257,7 +270,7 @@ export function ExplorerControls({
             </span>
             <button
               type="button"
-              aria-label="Une personne de plus"
+              aria-label={copy.common.morePerson}
               disabled={people >= 20}
               onClick={() => setDraft((d) => ({ ...d, personnes: String(people + 1) }))}
               className="grid size-11 place-items-center rounded-full border border-line-strong bg-paper disabled:opacity-40"

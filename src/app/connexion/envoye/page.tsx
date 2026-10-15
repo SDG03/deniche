@@ -14,7 +14,7 @@ export default async function SentPage({ searchParams }: PageProps<"/connexion/e
 
   return (
     <main id="contenu" className="mx-auto max-w-md px-5 py-8">
-      <Link href="/" aria-label="Déniche, accueil">
+      <Link href="/" aria-label={copy.common.homeLink}>
         <Logo />
       </Link>
       <div className="mt-12 grid size-14 place-items-center rounded-full bg-forest-soft text-forest">
@@ -26,22 +26,22 @@ export default async function SentPage({ searchParams }: PageProps<"/connexion/e
       <article className="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper">
         <div className="border-b border-line bg-cream-deep px-4 py-3 text-xs text-ink-mute">
           <div>
-            <span className="font-semibold text-ink">De :</span> Déniche &lt;bonjour@deniche.be&gt;
+            <span className="font-semibold text-ink">{t.mail.from}</span> {t.mail.fromValue}
           </div>
           <div>
-            <span className="font-semibold text-ink">À :</span> {email}
+            <span className="font-semibold text-ink">{t.mail.to}</span> {email}
           </div>
           <div>
-            <span className="font-semibold text-ink">Objet :</span> Ton lien de connexion Déniche
+            <span className="font-semibold text-ink">{t.mail.subjectLabel}</span> {t.mail.subject}
           </div>
         </div>
         <div className="px-4 py-5 text-sm text-ink-soft">
-          <p>Salut,</p>
-          <p className="mt-2">Voici ton lien pour te connecter. Il est valable 15 minutes et ne sert qu&apos;une fois.</p>
+          <p>{t.mail.hello}</p>
+          <p className="mt-2">{t.mail.body}</p>
           <a href={link} className={buttonClass({ variant: "primary", size: "md", className: "mt-4" })}>
             {t.open}
           </a>
-          <p className="mt-4 text-xs text-ink-mute">Tu n&apos;as rien demandé ? Ignore ce message, rien ne se passera.</p>
+          <p className="mt-4 text-xs text-ink-mute">{t.mail.ignore}</p>
         </div>
       </article>
     </main>

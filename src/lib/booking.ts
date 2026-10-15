@@ -8,7 +8,10 @@ import { PRICING_DEFAULTS, quoteBooking } from "./pricing";
 export type BookingErrorCode = "not_found" | "closed" | "sold_out" | "people" | "race" | "expired" | "forbidden";
 
 export class BookingError extends Error {
-  constructor(public code: BookingErrorCode, message?: string) {
+  constructor(
+    public code: BookingErrorCode,
+    message?: string,
+  ) {
     super(message ?? code);
   }
 }
@@ -87,7 +90,11 @@ export async function createHold({
 }
 
 /** Libère les places d'une réservation (une seule fois grâce au statut conditionnel). */
-export async function releaseHold(bookingId: string, status: "EXPIRED" | "CANCELLED", from: ("PENDING" | "CONFIRMED")[] = ["PENDING"]) {
+export async function releaseHold(
+  bookingId: string,
+  status: "EXPIRED" | "CANCELLED",
+  from: ("PENDING" | "CONFIRMED")[] = ["PENDING"],
+) {
   return db.$transaction(async (tx) => {
     const b = await tx.booking.findUnique({ where: { id: bookingId } });
     if (!b) return false;

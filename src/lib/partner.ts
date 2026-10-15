@@ -50,7 +50,13 @@ export async function getPartnerStats(partnerId: string, now = new Date(), days 
       saved += b.baseUnitPriceCents * b.people - b.totalCents;
       if (s.startsAt.getTime() - b.createdAt.getTime() < DAY) lastMinute++;
     }
-    const p = per.get(s.activity.id) ?? { id: s.activity.id, title: s.activity.title, capacity: 0, seats: 0, revenueCents: 0 };
+    const p = per.get(s.activity.id) ?? {
+      id: s.activity.id,
+      title: s.activity.title,
+      capacity: 0,
+      seats: 0,
+      revenueCents: 0,
+    };
     p.capacity += s.capacity;
     p.seats += sold;
     p.revenueCents += rev;
@@ -70,7 +76,13 @@ export async function getPartnerStats(partnerId: string, now = new Date(), days 
     seats,
     savedCents: saved,
     perActivity: [...per.values()]
-      .map((p) => ({ id: p.id, title: p.title, fillRate: p.capacity ? p.seats / p.capacity : 0, revenueCents: p.revenueCents, seats: p.seats }))
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        fillRate: p.capacity ? p.seats / p.capacity : 0,
+        revenueCents: p.revenueCents,
+        seats: p.seats,
+      }))
       .sort((a, b) => b.fillRate - a.fillRate),
     daily: [...daily.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => ({ day, ...v })),
   };
@@ -90,7 +102,10 @@ export async function getPartnerBookings(
       slot: { activity: { partnerId }, startsAt: { gte: opts.from, lt: opts.to } },
       status: { in: opts.excludeCancelled ? ["CONFIRMED", "CHECKED_IN"] : ["CONFIRMED", "CHECKED_IN", "CANCELLED"] },
     },
-    include: { user: { select: { name: true } }, slot: { include: { activity: { select: { title: true, slug: true } } } } },
+    include: {
+      user: { select: { name: true } },
+      slot: { include: { activity: { select: { title: true, slug: true } } } },
+    },
     orderBy: opts.orderBy === "slot" ? { slot: { startsAt: "asc" } } : { createdAt: "desc" },
     take: opts.take ?? 100,
   });

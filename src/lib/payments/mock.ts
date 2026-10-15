@@ -1,5 +1,6 @@
 import { randomCode } from "../codes";
 import type { BookingForPayment, PaymentProvider, PaymentResult } from "./types";
+import { copy } from "../copy";
 
 /** Carte de refus de démonstration, comme chez Stripe. */
 export const MOCK_DECLINED_CARD = "4000000000000002";
@@ -17,10 +18,12 @@ export class MockProvider implements PaymentProvider {
     await new Promise((r) => setTimeout(r, 450)); // un peu de réalisme
     if (input.method === "card") {
       const digits = (input.cardNumber ?? "").replace(/\D/g, "");
-      if (digits === MOCK_DECLINED_CARD) return { status: "declined", message: "Paiement refusé par la banque (carte de test de refus)." };
-      if (!luhn(digits)) return { status: "declined", message: "Ce numéro de carte n'est pas valide." };
+      if (digits === MOCK_DECLINED_CARD) return { status: "declined", message: copy.errors.cardDeclined };
+      if (!luhn(digits)) return { status: "declined", message: copy.errors.cardInvalid };
     }
-    console.info(`[paiement simulé] ${booking.reference} · ${(booking.totalCents / 100).toFixed(2)} € · ${input.method}`);
+    console.info(
+      `[paiement simulé] ${booking.reference} · ${(booking.totalCents / 100).toFixed(2)} € · ${input.method}`,
+    );
     return { status: "paid", ref: `mock_${randomCode(10).toLowerCase()}` };
   }
 

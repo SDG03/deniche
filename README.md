@@ -152,7 +152,7 @@ data/                 partenaires-candidats.json (prospection, jamais affiché)
 - **Avis** : maquette, marqués comme tels.
 - **Pages légales** : modèles **à valider** par un juriste.
 - **Tests e2e** : ils créent de vraies réservations dans la base de démo. `npm run seed` remet tout à zéro.
-- **Une seule langue** (fr-BE), mais tous les textes sont centralisés dans `src/lib/copy.ts`.
+- **Une seule langue** (fr-BE). Tous les textes de l'interface et les messages d'erreur sont centralisés dans `src/lib/copy.ts`. Les modèles juridiques sont dans `src/lib/legal.ts` et le contenu de démo (activités, partenaires) dans `prisma/seed-data.ts`.
 
 ## Pistes
 

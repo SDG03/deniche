@@ -14,6 +14,7 @@ import { topUpSlots } from "@/lib/inventory";
 import { getPartnerActivity } from "@/lib/partner";
 import { DEFAULT_TIERS } from "@/lib/pricing";
 import { weeklyTemplateSchema } from "@/lib/schedule";
+import { copy } from "@/lib/copy";
 
 export type FormState = { ok?: boolean; error?: string; message?: string; fieldErrors?: Record<string, string> };
 
@@ -21,18 +22,18 @@ export type FormState = { ok?: boolean; error?: string; message?: string; fieldE
 
 const activitySchema = z
   .object({
-    title: z.string().trim().min(4, "Un titre d'au moins 4 caractères.").max(80),
-    tagline: z.string().trim().min(4, "Une accroche courte.").max(120),
+    title: z.string().trim().min(4, copy.errors.titleShort).max(80),
+    tagline: z.string().trim().min(4, copy.errors.taglineShort).max(120),
     category: z.enum(CATEGORY_SLUGS),
-    description: z.string().trim().min(40, "Raconte un peu plus (40 caractères minimum).").max(3000),
-    address: z.string().trim().min(5, "Adresse requise.").max(160),
+    description: z.string().trim().min(40, copy.errors.descriptionShort).max(3000),
+    address: z.string().trim().min(5, copy.errors.addressRequired).max(160),
     city: z.string().trim().min(2).max(60),
     latitude: z.coerce.number().min(49.4).max(51.6),
     longitude: z.coerce.number().min(2.5).max(6.5),
     durationMin: z.coerce.number().int().min(15).max(720),
     minPeople: z.coerce.number().int().min(1).max(50),
     maxPeople: z.coerce.number().int().min(1).max(200),
-    basePrice: z.coerce.number().min(1, "Prix minimum : 1 €.").max(1000),
+    basePrice: z.coerce.number().min(1, copy.errors.priceMin).max(1000),
     minAge: z.coerce.number().int().min(0).max(99),
     setting: z.enum(["INDOOR", "OUTDOOR", "MIXED"]),
     level: z.enum(["EASY", "MEDIUM", "HARD"]),
@@ -42,7 +43,7 @@ const activitySchema = z
     published: z.coerce.boolean().default(false),
     keepImages: z.array(z.string().max(200)).default([]),
   })
-  .refine((d) => d.maxPeople >= d.minPeople, { path: ["maxPeople"], message: "Le maximum doit dépasser le minimum." });
+  .refine((d) => d.maxPeople >= d.minPeople, { path: ["maxPeople"], message: copy.errors.maxBelowMin });
 
 const MAX_UPLOAD = 4 * 1024 * 1024;
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
@@ -52,9 +53,9 @@ async function saveUploads(files: File[]) {
   await fs.mkdir(UPLOAD_DIR, { recursive: true });
   for (const f of files) {
     if (!f.size) continue;
-    if (f.size > MAX_UPLOAD) throw new Error("Une photo dépasse 4 Mo.");
+    if (f.size > MAX_UPLOAD) throw new Error(copy.errors.photoTooBig);
     const ext = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }[f.type];
-    if (!ext) throw new Error("Formats acceptés : JPG, PNG ou WebP.");
+    if (!ext) throw new Error(copy.errors.photoFormat);
     const name = `${Date.now()}-${randomCode(6).toLowerCase()}.${ext}`;
     await fs.writeFile(path.join(UPLOAD_DIR, name), Buffer.from(await f.arrayBuffer()));
     out.push(`/media/${name}`);
@@ -83,7 +84,7 @@ export async function saveActivity(_: FormState, formData: FormData): Promise<Fo
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     for (const i of parsed.error.issues) fieldErrors[String(i.path[0])] ??= i.message;
-    return { error: "Quelques champs sont à revoir.", fieldErrors };
+    return { error: copy.errors.fieldsToReview, fieldErrors };
   }
   const d = parsed.data;
   let uploaded: string[];
@@ -94,18 +95,19 @@ export async function saveActivity(_: FormState, formData: FormData): Promise<Fo
   }
 
   const existing = id ? await getPartnerActivity(partnerId, id) : null;
-  if (id && !existing) return { error: "Activité introuvable." };
+  if (id && !existing) return { error: copy.errors.activityNotFound };
   const allowedKeep = new Set((existing?.images as string[] | undefined) ?? []);
-  const oldCredits = (existing?.imageCredits as { author: string; license: string; source: string }[] | undefined) ?? [];
+  const oldCredits =
+    (existing?.imageCredits as { author: string; license: string; source: string }[] | undefined) ?? [];
   const kept = d.keepImages.filter((src) => allowedKeep.has(src));
   let images = [...kept, ...uploaded].slice(0, 8);
   let imageCredits = images.map((src) => {
     const i = ((existing?.images as string[] | undefined) ?? []).indexOf(src);
-    return i >= 0 && oldCredits[i] ? oldCredits[i] : { author: "Partenaire", license: "Fournie par le partenaire", source: "" };
+    return i >= 0 && oldCredits[i] ? oldCredits[i] : { ...copy.messages.partnerPhoto, source: "" };
   });
   if (!images.length) {
     images = [1, 2, 3].map((n) => `/images/covers/${d.category}-${n}.svg`);
-    imageCredits = images.map(() => ({ author: "Illustration Déniche", license: "Interne", source: "" }));
+    imageCredits = images.map(() => ({ ...copy.messages.coverPhoto, source: "" }));
   }
 
   const data = {
@@ -160,7 +162,7 @@ export async function saveActivity(_: FormState, formData: FormData): Promise<Fo
   revalidatePath("/partenaire", "layout");
   revalidatePath("/", "layout");
   if (!existing) redirect(`/partenaire/activites/${activityId}?cree=1`);
-  return { ok: true, message: "Activité enregistrée." };
+  return { ok: true, message: copy.messages.activitySaved };
 }
 
 // ------------------------------------------------------------- tarifs
@@ -171,20 +173,24 @@ const pricingSchema = z.object({
   fillBonusEnabled: z.boolean(),
   floorPct: z.number().int().min(10).max(100),
   quotaPct: z.number().int().min(0).max(100),
-  cutoffMinutes: z.number().int().min(0).max(24 * 60),
+  cutoffMinutes: z
+    .number()
+    .int()
+    .min(0)
+    .max(24 * 60),
   tiers: tiersSchema,
 });
 
 export async function savePricing(input: z.input<typeof pricingSchema>): Promise<FormState> {
   const { partnerId } = await requirePartner();
   const parsed = pricingSchema.safeParse(input);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Règles invalides." };
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? copy.errors.invalidRules };
   const d = parsed.data;
   const a = await getPartnerActivity(partnerId, d.activityId);
-  if (!a) return { error: "Activité introuvable." };
+  if (!a) return { error: copy.errors.activityNotFound };
   const hours = d.tiers.map((t) => t.minHours);
-  if (new Set(hours).size !== hours.length) return { error: "Deux paliers ont le même seuil d'heures." };
-  if (!hours.includes(0)) return { error: "Il faut un palier qui commence à 0 h (le dernier moment)." };
+  if (new Set(hours).size !== hours.length) return { error: copy.errors.duplicateTier };
+  if (!hours.includes(0)) return { error: copy.errors.needZeroTier };
   await db.activity.update({
     where: { id: a.id },
     data: {
@@ -197,24 +203,27 @@ export async function savePricing(input: z.input<typeof pricingSchema>): Promise
     },
   });
   revalidatePath("/", "layout");
-  return { ok: true, message: "Règles enregistrées. Les prix affichés sont déjà à jour." };
+  return { ok: true, message: copy.messages.rulesSaved };
 }
 
 // ------------------------------------------------------------- créneaux
 
-export async function saveSchedule(input: { activityId: string; template: unknown }): Promise<FormState & { created?: number }> {
+export async function saveSchedule(input: {
+  activityId: string;
+  template: unknown;
+}): Promise<FormState & { created?: number }> {
   const { partnerId } = await requirePartner();
   const a = await getPartnerActivity(partnerId, input.activityId);
-  if (!a) return { error: "Activité introuvable." };
+  if (!a) return { error: copy.errors.activityNotFound };
   const t = weeklyTemplateSchema.safeParse(input.template);
-  if (!t.success) return { error: "Modèle invalide : vérifie les horaires et capacités." };
+  if (!t.success) return { error: copy.errors.invalidTemplate };
   await db.activity.update({ where: { id: a.id }, data: { weeklyTemplate: t.data } });
   const created = await topUpSlots(new Date(), a.id);
   revalidatePath("/", "layout");
   return {
     ok: true,
     created,
-    message: created ? `${created} nouveau${created > 1 ? "x" : ""} créneau${created > 1 ? "x" : ""} sur les 3 prochaines semaines.` : "Modèle enregistré. Tous les créneaux existaient déjà.",
+    message: created ? copy.messages.slotsCreated(created) : copy.messages.templateSaved,
   };
 }
 
@@ -222,7 +231,15 @@ export async function saveSchedule(input: { activityId: string; template: unknow
 
 export type CheckinResult = {
   status: "idle" | "found" | "checked" | "already" | "not_found" | "cancelled";
-  booking?: { id: string; reference: string; name: string; people: number; activity: string; startsAt: string; names: string[] };
+  booking?: {
+    id: string;
+    reference: string;
+    name: string;
+    people: number;
+    activity: string;
+    startsAt: string;
+    names: string[];
+  };
 };
 
 async function findForPartner(partnerId: string, raw: string) {
@@ -245,9 +262,14 @@ export async function lookupCheckin(_: CheckinResult, formData: FormData): Promi
   const { partnerId } = await requirePartner();
   const raw = String(formData.get("code") ?? "");
   if (formData.get("confirm")) {
-    const b = await db.booking.findFirst({ where: { id: String(formData.get("confirm")), slot: { activity: { partnerId } } } });
+    const b = await db.booking.findFirst({
+      where: { id: String(formData.get("confirm")), slot: { activity: { partnerId } } },
+    });
     if (!b) return { status: "not_found" };
-    const r = await db.booking.updateMany({ where: { id: b.id, status: "CONFIRMED" }, data: { status: "CHECKED_IN", checkedInAt: new Date() } });
+    const r = await db.booking.updateMany({
+      where: { id: b.id, status: "CONFIRMED" },
+      data: { status: "CHECKED_IN", checkedInAt: new Date() },
+    });
     revalidatePath("/partenaire", "layout");
     const full = await findForPartner(partnerId, b.reference);
     return { status: r.count ? "checked" : "already", booking: full ? view(full) : undefined };

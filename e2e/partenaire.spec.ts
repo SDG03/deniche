@@ -14,9 +14,11 @@ test("un partenaire crée une activité, règle ses réductions et valide une ar
   await page.getByLabel("Titre").fill(title);
   await page.getByLabel("Accroche").fill("Ton propre t-shirt, imprimé à la main.");
   await page.getByLabel("Catégorie").selectOption("atelier");
-  await page.getByLabel("Description").fill(
-    "Tu choisis un motif, tu prépares l'écran, tu tires ta première impression. Tu repars avec un t-shirt unique.",
-  );
+  await page
+    .getByLabel("Description")
+    .fill(
+      "Tu choisis un motif, tu prépares l'écran, tu tires ta première impression. Tu repars avec un t-shirt unique.",
+    );
   await page.getByLabel("Adresse").fill("Rue de la Chapelle 10, 4800 Verviers");
   await page.getByLabel("Localité").fill("Verviers");
   await page.getByLabel("Prix (€/pers.)").fill("32");
@@ -33,14 +35,23 @@ test("un partenaire crée une activité, règle ses réductions et valide une ar
   await expect(page.getByRole("status")).toContainText("Règles enregistrées");
 
   // Un client réserve l'activité
-  const client = await browser.newContext({ locale: "fr-BE", timezoneId: "Europe/Brussels", viewport: { width: 375, height: 812 } });
+  const client = await browser.newContext({
+    locale: "fr-BE",
+    timezoneId: "Europe/Brussels",
+    viewport: { width: 375, height: 812 },
+  });
   const c = await client.newPage();
   await c.goto("/connexion");
   await c.getByRole("button", { name: /Connexion démo · utilisateur/ }).click();
   await c.waitForURL("/");
   await c.goto(`/explorer?q=${encodeURIComponent(title)}`);
   await c.getByRole("link", { name: title }).click();
-  await c.locator("section[aria-labelledby=creneaux]").getByRole("list", { name: "Créneaux" }).getByRole("button", { disabled: false }).first().click();
+  await c
+    .locator("section[aria-labelledby=creneaux]")
+    .getByRole("list", { name: "Créneaux" })
+    .getByRole("button", { disabled: false })
+    .first()
+    .click();
   await c.getByRole("button", { name: "Réserver", exact: true }).filter({ visible: true }).click();
   await c.waitForURL((u) => u.pathname.startsWith("/reserver/"));
   await c.getByRole("button", { name: /^Payer/ }).click();

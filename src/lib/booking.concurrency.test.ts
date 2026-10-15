@@ -64,7 +64,9 @@ async function makeSlot(capacity: number, bookedCount = 0) {
     data: { activityId: activity.id, startsAt: new Date(Date.now() + 5 * 3_600_000), capacity, bookedCount },
   });
   const users = await Promise.all(
-    Array.from({ length: 10 }, (_, i) => db.user.create({ data: { email: `u${i}-${Math.random()}@test.be`, name: `U${i}` } })),
+    Array.from({ length: 10 }, (_, i) =>
+      db.user.create({ data: { email: `u${i}-${Math.random()}@test.be`, name: `U${i}` } }),
+    ),
   );
   return { slot, users };
 }
@@ -72,7 +74,9 @@ async function makeSlot(capacity: number, bookedCount = 0) {
 describe("concurrence des réservations", () => {
   it("10 personnes se battent pour les 3 dernières places : 3 gagnent, jamais plus", async () => {
     const { slot, users } = await makeSlot(10, 7);
-    const results = await Promise.allSettled(users.map((u) => m.booking.createHold({ userId: u.id, slotId: slot.id, people: 1 })));
+    const results = await Promise.allSettled(
+      users.map((u) => m.booking.createHold({ userId: u.id, slotId: slot.id, people: 1 })),
+    );
     const ok = results.filter((r) => r.status === "fulfilled");
     expect(ok).toHaveLength(3);
     const after = await m.db.slot.findUniqueOrThrow({ where: { id: slot.id } });

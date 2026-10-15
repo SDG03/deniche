@@ -8,7 +8,8 @@ export async function GET(req: NextRequest, ctx: RouteContext<"/api/reservations
   const user = await getCurrentUser();
   if (!user) return new NextResponse("Non connecté", { status: 401 });
   const b = await getBookingForUser(id, user.id);
-  if (!b || (b.status !== "CONFIRMED" && b.status !== "CHECKED_IN")) return new NextResponse("Introuvable", { status: 404 });
+  if (!b || (b.status !== "CONFIRMED" && b.status !== "CHECKED_IN"))
+    return new NextResponse("Introuvable", { status: 404 });
   const a = b.slot.activity;
   const ics = buildIcs({
     uid: b.reference,

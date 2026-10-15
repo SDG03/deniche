@@ -20,14 +20,25 @@ export function BookingRow({ b, now, showActivity = true }: { b: PartnerBooking;
   const isNew = now.getTime() - b.createdAt.getTime() < 15 * 60_000;
   const lastMinute = b.slot.startsAt.getTime() - b.createdAt.getTime() < 86_400_000;
   return (
-    <li className={cn("flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3", isNew && "animate-fade-up bg-coral-soft/50")}>
-      <div className="min-w-0 basis-full sm:basis-0 sm:flex-1">
+    <li
+      className={cn(
+        "flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3",
+        isNew && "animate-fade-up bg-coral-soft/50",
+      )}
+    >
+      <div className="min-w-0 basis-full sm:flex-1 sm:basis-0">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-semibold">{b.user.name}</span>
           <span className="tabular text-xs text-ink-mute">{b.reference}</span>
-          {isNew && <span className="rounded-full bg-coral px-2 py-0.5 text-2xs font-bold text-ink">Nouveau</span>}
+          {isNew && (
+            <span className="rounded-full bg-coral px-2 py-0.5 text-2xs font-bold text-ink">
+              {copy.partnerUi.row.isNew}
+            </span>
+          )}
           {lastMinute && b.status !== "CANCELLED" && (
-            <span className="rounded-full bg-forest-soft px-2 py-0.5 text-2xs font-semibold text-forest">Dernière minute</span>
+            <span className="rounded-full bg-forest-soft px-2 py-0.5 text-2xs font-semibold text-forest">
+              {copy.partnerUi.row.lastMinute}
+            </span>
           )}
         </div>
         <div className="mt-0.5 text-sm text-ink-soft">
@@ -45,7 +56,7 @@ export function BookingRow({ b, now, showActivity = true }: { b: PartnerBooking;
             className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong bg-paper px-4 text-sm font-semibold hover:border-forest hover:text-forest"
           >
             <Check aria-hidden className="size-4" />
-            Valider l&apos;arrivée
+            {copy.partnerUi.row.checkin}
           </button>
         </form>
       ) : (

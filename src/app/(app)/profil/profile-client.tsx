@@ -36,7 +36,7 @@ export function PositionCard({ isDefault }: { isDefault: boolean }) {
             router.refresh();
           }}
         >
-          Revenir à Liège centre
+          {t.backToLiege}
         </Button>
       )}
     </div>
@@ -66,6 +66,6 @@ export function InstallButton() {
         {t.install}
       </Button>
     );
-  if (ios) return <p className="text-sm text-ink-mute">Sur iPhone : Partager, puis « Sur l&apos;écran d&apos;accueil ».</p>;
-  return <p className="text-sm text-ink-mute">Ouvre Déniche dans Chrome ou Edge pour l&apos;installer comme une appli.</p>;
+  if (ios) return <p className="text-sm text-ink-mute">{t.iosInstall}</p>;
+  return <p className="text-sm text-ink-mute">{t.otherInstall}</p>;
 }

@@ -15,9 +15,9 @@ export const metadata: Metadata = { title: copy.profile.title };
 const t = copy.profile;
 
 const LEGAL = [
-  { href: "/legal/cgv", label: "Conditions générales de vente" },
-  { href: "/legal/confidentialite", label: "Politique de confidentialité" },
-  { href: "/legal/annulation", label: "Annulation et droit de rétractation" },
+  { href: "/legal/cgv", label: copy.legalPages.cgv },
+  { href: "/legal/confidentialite", label: copy.legalPages.privacy },
+  { href: "/legal/annulation", label: copy.legalPages.cancellation },
 ];
 
 export default async function ProfilePage() {
@@ -39,16 +39,17 @@ export default async function ProfilePage() {
           <div className="min-w-0">
             <div className="font-display text-xl font-bold">{t.hello(user.name.replace(/\s*\(démo\)$/, ""))}</div>
             <div className="truncate text-sm text-cream/75">{user.email}</div>
-            <div className="mt-1 text-sm text-cream/90">
-              {stats} sortie{stats > 1 ? "s" : ""} réservée{stats > 1 ? "s" : ""} avec Déniche
-            </div>
+            <div className="mt-1 text-sm text-cream/90">{t.outings(stats)}</div>
           </div>
         </div>
       ) : (
         <div className="rounded-[var(--radius-card)] border border-line bg-paper p-5">
           <div className="font-display text-xl font-bold">{t.guest}</div>
           <p className="mt-1 text-sm text-ink-soft">{t.guestBody}</p>
-          <Link href="/connexion?next=/profil" className={buttonClass({ variant: "primary", size: "sm", className: "mt-4" })}>
+          <Link
+            href="/connexion?next=/profil"
+            className={buttonClass({ variant: "primary", size: "sm", className: "mt-4" })}
+          >
             {copy.auth.title}
           </Link>
         </div>
@@ -67,11 +68,17 @@ export default async function ProfilePage() {
         </div>
       </section>
 
-      <nav aria-label="Liens" className="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper">
+      <nav
+        aria-label={copy.common.links}
+        className="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-line bg-paper"
+      >
         <ul className="divide-y divide-line">
           {user?.role === "PARTNER" && (
             <li>
-              <Link href="/partenaire" className="flex min-h-14 items-center gap-3 px-4 font-semibold text-forest hover:bg-cream">
+              <Link
+                href="/partenaire"
+                className="flex min-h-14 items-center gap-3 px-4 font-semibold text-forest hover:bg-cream"
+              >
                 <Store aria-hidden className="size-5" />
                 <span className="flex-1">{copy.nav.partner}</span>
                 <ChevronRight aria-hidden className="size-5" />
@@ -98,9 +105,7 @@ export default async function ProfilePage() {
           </button>
         </form>
       )}
-      <p className="mt-8 text-xs text-ink-mute">
-        Déniche est un prototype étudiant (Startech, HELMo Gramme, Liège). Les partenaires, les avis et les paiements sont fictifs.
-      </p>
+      <p className="mt-8 text-xs text-ink-mute">{t.disclaimer}</p>
     </div>
   );
 }

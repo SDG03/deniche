@@ -1,17 +1,22 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { LogoMark } from "./logo";
+import { copy } from "@/lib/copy";
 
 /** En-tête mobile des pages internes (masqué sur desktop où TopNav prend le relais). */
 export function MobileHeader({ title, back, action }: { title?: string; back?: string; action?: React.ReactNode }) {
   return (
     <div className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-line bg-cream/90 px-2 backdrop-blur md:hidden">
       {back ? (
-        <Link href={back} aria-label="Retour" className="grid size-11 place-items-center rounded-full hover:bg-ink/5">
+        <Link
+          href={back}
+          aria-label={copy.common.back}
+          className="grid size-11 place-items-center rounded-full hover:bg-ink/5"
+        >
           <ArrowLeft aria-hidden className="size-5" />
         </Link>
       ) : (
-        <Link href="/" aria-label="Déniche, accueil" className="grid size-11 place-items-center">
+        <Link href="/" aria-label={copy.common.homeLink} className="grid size-11 place-items-center">
           <LogoMark className="size-7" />
         </Link>
       )}

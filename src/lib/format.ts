@@ -1,6 +1,7 @@
 import { TZDate } from "@date-fns/tz";
 import { addDays, differenceInCalendarDays, format, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
+import { copy } from "./copy";
 
 export const TZ = "Europe/Brussels";
 export const LOCALE = "fr-BE";
@@ -43,8 +44,8 @@ export function formatRelativeDay(d: Date | string, now: Date = new Date()) {
   const a = inBrussels(d);
   const b = inBrussels(now);
   const diff = differenceInCalendarDays(a, b);
-  if (diff === 0) return "Aujourd'hui";
-  if (diff === 1) return "Demain";
+  if (diff === 0) return copy.home.quickWhen.today;
+  if (diff === 1) return copy.home.quickWhen.tomorrow;
   return format(a, "EEEE d MMM", { locale: fr });
 }
 

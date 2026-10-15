@@ -35,7 +35,9 @@ export const LEGAL_DOCS: LegalDoc[] = [
       },
       {
         title: "4. Annulation",
-        body: ["Chaque activité affiche sa politique d'annulation (souple, modérée ou stricte). Voir la page Annulation et rétractation."],
+        body: [
+          "Chaque activité affiche sa politique d'annulation (souple, modérée ou stricte). Voir la page Annulation et rétractation.",
+        ],
       },
       {
         title: "5. Responsabilité",
@@ -79,7 +81,9 @@ export const LEGAL_DOCS: LegalDoc[] = [
       },
       {
         title: "Conservation",
-        body: ["Compte : jusqu'à sa suppression. Réservations et factures : [durée légale à vérifier, généralement 7 ans en Belgique pour les pièces comptables]."],
+        body: [
+          "Compte : jusqu'à sa suppression. Réservations et factures : [durée légale à vérifier, généralement 7 ans en Belgique pour les pièces comptables].",
+        ],
       },
       {
         title: "Tes droits",
@@ -87,7 +91,10 @@ export const LEGAL_DOCS: LegalDoc[] = [
           "Accès, rectification, effacement, limitation, portabilité et opposition : écris à [adresse de contact]. Tu peux introduire une plainte auprès de l'Autorité de protection des données (APD).",
         ],
       },
-      { title: "Cookies", body: ["Un cookie de session (connexion) et un cookie de position (facultatif). Pas de cookie publicitaire."] },
+      {
+        title: "Cookies",
+        body: ["Un cookie de session (connexion) et un cookie de position (facultatif). Pas de cookie publicitaire."],
+      },
     ],
   },
   {
@@ -118,7 +125,9 @@ export const LEGAL_DOCS: LegalDoc[] = [
       },
       {
         title: "Comment annuler",
-        body: ["Dans Mes réservations, ouvre la réservation puis touche « Annuler ». Le remboursement part sur le moyen de paiement utilisé."],
+        body: [
+          "Dans Mes réservations, ouvre la réservation puis touche « Annuler ». Le remboursement part sur le moyen de paiement utilisé.",
+        ],
       },
     ],
   },

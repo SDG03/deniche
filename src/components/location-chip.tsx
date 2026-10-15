@@ -34,10 +34,10 @@ export function LocationChip({ isDefault, className }: { isDefault: boolean; cla
     state === "locating"
       ? copy.profile.locating
       : state === "denied"
-        ? "Liège centre"
+        ? copy.location.liege
         : isDefault
-          ? "Liège centre"
-          : "Autour de toi";
+          ? copy.location.liege
+          : copy.location.around;
   return (
     <button
       type="button"
@@ -48,7 +48,11 @@ export function LocationChip({ isDefault, className }: { isDefault: boolean; cla
         className,
       )}
     >
-      {isDefault ? <MapPin aria-hidden className="size-4 text-forest" /> : <LocateFixed aria-hidden className="size-4 text-forest" />}
+      {isDefault ? (
+        <MapPin aria-hidden className="size-4 text-forest" />
+      ) : (
+        <LocateFixed aria-hidden className="size-4 text-forest" />
+      )}
       <span>{label}</span>
       <span className="sr-only">— {copy.profile.useLocation}</span>
     </button>

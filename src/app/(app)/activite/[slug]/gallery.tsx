@@ -23,7 +23,7 @@ export function Gallery({ images, alts, credits }: { images: string[]; alts: str
             setIndex(Math.round(el.scrollLeft / el.clientWidth));
           }}
           aria-roledescription="carrousel"
-          aria-label="Photos de l'activité"
+          aria-label={copy.activity.galleryLabel}
         >
           {images.map((src, i) => (
             <div key={src} className="relative aspect-[4/3] w-full shrink-0 snap-center bg-sand">
@@ -44,7 +44,7 @@ export function Gallery({ images, alts, credits }: { images: string[]; alts: str
             type="button"
             onClick={() => setIndex(i)}
             className={`relative bg-sand ${i === 0 ? "row-span-2" : ""}`}
-            aria-label={`Afficher le crédit de la photo ${i + 1}`}
+            aria-label={copy.activity.showCredit(i + 1)}
           >
             <Image
               src={src}
@@ -61,7 +61,12 @@ export function Gallery({ images, alts, credits }: { images: string[]; alts: str
       {credit && credit.source && (
         <p className="mt-2 px-4 text-2xs text-ink-mute md:px-0">
           {copy.activity.photoCredit} {index + 1} : {credit.author} ·{" "}
-          <a href={credit.source} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-ink">
+          <a
+            href={credit.source}
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-2 hover:text-ink"
+          >
             {credit.license}
           </a>
         </p>
