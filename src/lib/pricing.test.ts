@@ -124,6 +124,12 @@ describe("remplissage", () => {
     expect(r.unitPriceCents).toBe(3000);
   });
 
+  it("explique l'absence de réduction", () => {
+    expect(computePrice({ ...base, fillRate: 0.9, now: at(1) }).tierLabel).toMatch(/Presque complet/);
+    expect(computePrice({ ...base, now: at(1), quota: { capacity: 4, discountedSold: 2 } }).tierLabel).toMatch(/prix réduit/);
+    expect(computePrice({ ...base, now: at(100) }).tierLabel).toBe("Plein tarif");
+  });
+
   it("à 80 % pile, la réduction s'applique encore", () => {
     expect(computePrice({ ...base, fillRate: 0.8, now: at(1) }).discountPct).toBe(40);
   });

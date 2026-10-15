@@ -47,10 +47,10 @@ export function ActivityCard({
         </div>
       </div>
       <div className="mt-3 flex flex-1 flex-col">
-        <div className="flex items-center gap-1.5 text-xs font-medium text-ink-mute">
-          <span className="text-forest">{a.categoryLabel}</span>
+        <div className="flex min-w-0 items-center gap-1.5 text-xs font-medium text-ink-mute">
+          <span className="shrink-0 text-forest">{a.categoryLabel}</span>
           <span aria-hidden>·</span>
-          <MapPin aria-hidden className="size-3.5" />
+          <MapPin aria-hidden className="size-3.5 shrink-0" />
           <span className="truncate">
             {a.city} · {formatKm(a.distanceKm)}
           </span>
@@ -60,10 +60,10 @@ export function ActivityCard({
             {a.title}
           </Link>
         </h3>
-        <div className="mt-auto flex items-end justify-between gap-3 pt-2">
-          <div className="flex min-w-0 items-center gap-1.5 text-sm text-ink-soft">
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-3 gap-y-1 pt-2">
+          <div className="flex items-center gap-1.5 text-sm whitespace-nowrap text-ink-soft">
             <Clock aria-hidden className="size-4 shrink-0 text-ink-mute" />
-            <span className="truncate">{slot ? formatSlotWhen(slot.startsAt, now) : copy.card.noSlot}</span>
+            <span>{slot ? formatSlotWhen(slot.startsAt, now) : copy.card.noSlot}</span>
           </div>
           <PriceTag
             prefix={copy.card.from}

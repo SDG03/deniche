@@ -143,6 +143,15 @@ export function tierLabelFor(pct: number, minHours: number, upper: number | null
   return fillBonus ? `${range} · bonus créneau calme` : range;
 }
 
+/** Explique pourquoi un créneau reste au plein tarif alors que le palier prévoit une réduction. */
+function explainZero(ctx: DiscountContext, tierPct: number): string | null {
+  if (tierPct <= 0) return null;
+  if (!ctx.lastMinuteEnabled) return "Prix fixe (pas de dernière minute)";
+  if (ctx.quotaReached) return "Plus de places à prix réduit";
+  if (ctx.fillRate > PRICING_DEFAULTS.highFillThreshold) return "Presque complet : pas de réduction";
+  return null;
+}
+
 export function discountedSeatsLeft(quota: QuotaInput): number {
   const pct = quota.quotaPct ?? PRICING_DEFAULTS.quotaPct;
   const max = Math.floor((quota.capacity * pct) / 100);
@@ -208,7 +217,7 @@ export function computePrice(input: PriceInput): PriceResult {
   return {
     unitPriceCents,
     discountPct: current.pct,
-    tierLabel: tierLabelFor(current.pct, current.tier.minHours, current.upper, current.fillBonusApplied),
+    tierLabel: explainZero(ctx, current.tier.pct) ?? tierLabelFor(current.pct, current.tier.minHours, current.upper, current.fillBonusApplied),
     nextChangeAt,
     nextDiscountPct,
     basePriceCents,

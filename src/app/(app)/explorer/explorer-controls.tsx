@@ -108,7 +108,7 @@ export function ExplorerControls({
           aria-haspopup="dialog"
         >
           <SlidersHorizontal aria-hidden className="size-5" />
-          <span className="hidden sm:inline">{t.filters}</span>
+          <span className="sr-only sm:not-sr-only">{t.filters}</span>
           {activeCount > 0 && (
             <span className="tabular grid size-5 place-items-center rounded-full bg-forest text-2xs text-cream">
               {activeCount}
@@ -142,7 +142,7 @@ export function ExplorerControls({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-3">
-        <p className="text-sm text-ink-mute" aria-live="polite">
+        <p className="text-sm whitespace-nowrap text-ink-mute" aria-live="polite">
           {t.results(resultCount)}
         </p>
         <div className="flex items-center gap-2">
