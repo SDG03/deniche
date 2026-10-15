@@ -167,7 +167,9 @@ async function main() {
         const people = Math.min(seats - booked, Math.max(a.minPeople, 1 + Math.floor(rand() * 4)));
         // Moment de la réservation : entre 5 jours et 40 min avant, toujours dans le passé.
         const leadH = rand() < 0.35 ? 0.7 + rand() * 6 : 6 + rand() * 114;
-        const bookedAt = new Date(Math.min(now.getTime() - 60_000, s.startsAt.getTime() - leadH * H));
+        let bookedAt = new Date(s.startsAt.getTime() - leadH * H);
+        // Créneau futur : la réservation a forcément eu lieu dans le passé (étalée sur les 3 derniers jours).
+        if (bookedAt > now) bookedAt = new Date(now.getTime() - (0.4 + rand() * 72) * H);
         const price = computePrice({
           basePriceCents: activity.basePriceCents,
           startsAt: s.startsAt,
@@ -199,7 +201,7 @@ async function main() {
           checkinCode: newCheckinCode(),
           createdAt: bookedAt,
           confirmedAt: bookedAt,
-          cancelledAt: cancelled ? new Date(bookedAt.getTime() + 2 * H) : null,
+          cancelledAt: cancelled ? new Date(Math.min(now.getTime(), bookedAt.getTime() + 2 * H)) : null,
           checkedInAt: status === "CHECKED_IN" ? s.startsAt : null,
         });
         // Une réservation annulée ne garde pas ses places.

@@ -77,7 +77,7 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
                 dangerouslySetInnerHTML={{ __html: svg }}
               />
               <div className="mt-4 text-xs font-semibold tracking-wide text-ink-mute uppercase">{t.code}</div>
-              <div className="tabular font-display text-3xl font-bold tracking-[0.2em]">{booking.checkinCode}</div>
+              <div data-testid="checkin-code" className="tabular font-display text-3xl font-bold tracking-[0.2em]">{booking.checkinCode}</div>
             </div>
           )}
 

@@ -57,3 +57,6 @@ skills-lock.json
 
 # fichiers de travail locaux
 /.work/
+
+# photos envoyées par les partenaires (prototype)
+/uploads/
