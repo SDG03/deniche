@@ -44,11 +44,11 @@ export function ScheduleEditor({ activityId, initial, defaultCapacity }: { activ
           const day = days[d];
           return (
             <li key={d} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3">
-              <label className="flex min-h-11 w-32 items-center gap-2 font-semibold">
+              <label className="flex min-h-11 w-full items-center gap-2 font-semibold sm:w-32">
                 <input type="checkbox" checked={day.open} onChange={(e) => update(d, { open: e.target.checked })} className="size-5 accent-forest" />
                 {WEEKDAYS[d]}
               </label>
-              <div className={cn("flex flex-1 flex-wrap items-center gap-2", !day.open && "opacity-40")}>
+              <div className={cn("flex min-w-0 flex-1 flex-wrap items-center gap-2", !day.open && "opacity-40")}>
                 {day.open ? (
                   <>
                     {day.times.map((t) => (

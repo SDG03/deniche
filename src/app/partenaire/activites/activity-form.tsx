@@ -210,7 +210,7 @@ export function ActivityForm({ values }: { values: ActivityFormValues }) {
       <section className="rounded-[var(--radius-card)] border border-line bg-paper p-5">
         <h2 className="font-display text-xl font-bold">Format et prix</h2>
         <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Field label="Prix de base (€/pers.)" name="basePrice" error={e.basePrice}>
+          <Field label="Prix (€/pers.)" name="basePrice" error={e.basePrice}>
             <input id="basePrice" name="basePrice" type="number" step="0.5" min="1" defaultValue={values.basePrice} className={input} {...err("basePrice")} />
           </Field>
           <Field label="Durée (min)" name="durationMin" error={e.durationMin}>

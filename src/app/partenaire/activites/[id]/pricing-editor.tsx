@@ -70,7 +70,7 @@ export function PricingEditor({ activityId, basePriceCents, initial }: { activit
         <h2 id="curve-title" className="font-display text-xl font-bold">
           Prix par personne selon l&apos;heure de réservation
         </h2>
-        <p className="mt-1 text-sm text-ink-mute">Base {formatPrice(basePriceCents)} · l&apos;axe va de 4 jours avant au départ.</p>
+        <p className="mt-1 text-sm text-ink-mute">Base {formatPrice(basePriceCents)} · de 4 jours avant au départ, échelle resserrée près du départ.</p>
         <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Scénario de remplissage">
           {FILLS.map((f) => (
             <Chip key={f.value} selected={fill === f.value} onClick={() => setFill(f.value)} className="min-h-10 px-3 text-xs">
@@ -300,7 +300,8 @@ function PriceChart({
   const yMax = basePriceCents * 1.08;
   const floorCents = (basePriceCents * floorPct) / 100;
   const yMin = Math.min(floorCents, ...curve.map((p) => p.unitPriceCents)) * 0.85;
-  const x = (h: number) => pad.l + ((maxH - h) / maxH) * (W - pad.l - pad.r);
+  // Échelle racine carrée : les dernières heures (où tout se joue) restent lisibles.
+  const x = (h: number) => pad.l + (1 - Math.sqrt(h / maxH)) * (W - pad.l - pad.r);
   const y = (c: number) => pad.t + (1 - (c - yMin) / (yMax - yMin)) * (H - pad.t - pad.b);
 
   let d = "";
@@ -311,7 +312,7 @@ function PriceChart({
     else d += `H${px}V${py}`;
   });
 
-  const ticks = (W < 420 ? [96, 72, 48, 24, 0] : [96, 72, 48, 24, 6, 0]).filter((h) => h <= maxH);
+  const ticks = (W < 420 ? [96, 48, 24, 6, 0] : [96, 72, 48, 24, 12, 6, 2, 0]).filter((h) => h <= maxH);
   const yTicks = [basePriceCents, Math.round((basePriceCents + yMin) / 2)];
   const hp = hover === null ? null : curve.find((p) => p.hoursLeft === hover);
   const cutoffX = x(cutoffMinutes / 60);
@@ -327,7 +328,8 @@ function PriceChart({
         onPointerMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           const vx = ((e.clientX - r.left) / r.width) * W;
-          const h = Math.round(maxH - ((vx - pad.l) / (W - pad.l - pad.r)) * maxH);
+          const f = 1 - (vx - pad.l) / (W - pad.l - pad.r);
+          const h = Math.round(Math.max(0, f) ** 2 * maxH);
           setHover(Math.min(maxH, Math.max(0, h)));
         }}
         onPointerLeave={() => setHover(null)}
