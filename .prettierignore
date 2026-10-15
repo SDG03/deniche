@@ -1,0 +1,7 @@
+node_modules
+.next
+src/generated
+public
+.work
+package-lock.json
+prisma/*.db

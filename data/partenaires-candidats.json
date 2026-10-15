@@ -1,0 +1,135 @@
+{
+  "_avertissement": "Liste de prospection uniquement. Aucun de ces prestataires n'est partenaire de Déniche et aucun n'apparaît dans l'appli. Noms recopiés d'une note manuscrite puis corrigés : tout ce qui porte \"a_verifier\": true doit être confirmé (orthographe exacte, adresse, existence) avant tout contact.",
+  "_derniere_mise_a_jour": "2026-10-15",
+  "candidats": [
+    {
+      "nom": "Formul'Quad",
+      "note_manuscrite": "Formul'quads",
+      "activites": ["balade en buggy", "paintball", "balade en quad", "tir à l'arc"],
+      "categories": ["quad", "tir"],
+      "a_verifier": true,
+      "remarque": "Orthographe probable au singulier (« Formul'Quad ») : à confirmer sur leur site."
+    },
+    {
+      "nom": "Atelier pâtisserie (nom à préciser)",
+      "activites": ["atelier pâtisserie"],
+      "categories": ["cuisine"],
+      "a_verifier": true,
+      "remarque": "Nom générique sur la note : retrouver l'enseigne exacte."
+    },
+    {
+      "nom": "Liège Karting",
+      "activites": ["karting"],
+      "categories": ["karting"],
+      "a_verifier": true,
+      "remarque": "Vérifier la dénomination officielle (plusieurs pistes existent dans la région liégeoise)."
+    },
+    {
+      "nom": "Karting Eupen",
+      "activites": ["karting"],
+      "categories": ["karting"],
+      "a_verifier": true,
+      "remarque": "Eupen est à environ 40 km de Liège : dans le rayon de 60 km."
+    },
+    {
+      "nom": "Isatis",
+      "activites": ["escalade", "bloc"],
+      "categories": ["escalade"],
+      "a_verifier": true,
+      "remarque": "Salle d'escalade liégeoise, nom à confirmer."
+    },
+    {
+      "nom": "Elephant",
+      "activites": ["bloc"],
+      "categories": ["escalade"],
+      "a_verifier": true,
+      "remarque": "Nom incomplet sur la note (salle de bloc ?) : retrouver l'enseigne exacte."
+    },
+    {
+      "nom": "Top Rock",
+      "activites": ["escalade"],
+      "categories": ["escalade"],
+      "a_verifier": true
+    },
+    {
+      "nom": "Gecko (Liège)",
+      "activites": ["escalade", "bloc"],
+      "categories": ["escalade"],
+      "a_verifier": true
+    },
+    {
+      "nom": "Backyard (format « backyard ultra »)",
+      "note_manuscrite": "Backyard",
+      "activites": ["trail"],
+      "categories": ["trail"],
+      "a_verifier": true,
+      "remarque": "« Backyard » désigne un format de course : identifier l'organisateur et l'édition locale visés."
+    },
+    {
+      "nom": "Corrida / trail de Liège",
+      "note_manuscrite": "Corida Trail Liège",
+      "activites": ["trail"],
+      "categories": ["trail"],
+      "a_verifier": true,
+      "remarque": "« Corida » s'écrit probablement « Corrida ». Vérifier le nom exact de l'événement ou du club."
+    },
+    {
+      "nom": "Wefor Trail",
+      "activites": ["trail"],
+      "categories": ["trail"],
+      "a_verifier": true,
+      "remarque": "Orthographe à confirmer (peut-être « WeFor »)."
+    },
+    {
+      "nom": "Kayak sur l'Ourthe à Durbuy (loueur à préciser)",
+      "note_manuscrite": "Kayak : descente de la Lesse, Durbuy",
+      "activites": ["kayak"],
+      "categories": ["kayak"],
+      "a_verifier": true,
+      "remarque": "Correction : Durbuy est sur l'Ourthe, pas sur la Lesse. Nous séparons les deux pistes."
+    },
+    {
+      "nom": "Descente de la Lesse (Dinant / Houyet, loueur à préciser)",
+      "note_manuscrite": "Kayak : descente de la Lesse, Durbuy",
+      "activites": ["kayak"],
+      "categories": ["kayak"],
+      "a_verifier": true,
+      "remarque": "La Lesse se descend entre Houyet et Dinant, à environ 75-90 km de Liège : au-delà du rayon de 60 km."
+    },
+    {
+      "nom": "Activ Malmedy",
+      "activites": ["paintball"],
+      "categories": ["tir"],
+      "a_verifier": true,
+      "remarque": "Graphie à confirmer (« Activ' Malmedy » ?)."
+    },
+    {
+      "nom": "Trottinette tout-terrain (destination à préciser)",
+      "activites": ["trottinette"],
+      "categories": ["trottinette"],
+      "a_verifier": true
+    },
+    {
+      "nom": "Le Monde Sauvage (Aywaille)",
+      "note_manuscrite": "Monde sauvage d'Aywaille",
+      "activites": ["parc animalier"],
+      "categories": ["nature"],
+      "a_verifier": false,
+      "remarque": "Parc animalier connu, à environ 25 km de Liège. Classé « plus loin » sur la note, mais il est dans le rayon."
+    },
+    {
+      "nom": "Zoo d'Amnéville",
+      "activites": ["zoo"],
+      "categories": ["nature"],
+      "a_verifier": false,
+      "remarque": "En France (Moselle), à environ 200 km : hors du périmètre de 60 km, piste pour une offre « escapade »."
+    },
+    {
+      "nom": "Nausicaá",
+      "activites": ["aquarium"],
+      "categories": ["nature"],
+      "a_verifier": false,
+      "remarque": "Boulogne-sur-Mer (France), à environ 350 km : hors périmètre, piste « escapade » uniquement."
+    }
+  ]
+}

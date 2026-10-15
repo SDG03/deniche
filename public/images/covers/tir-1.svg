@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Paintball & tir">
+<rect width="1200" height="900" fill="#1F3D2F"/>
+<circle cx="980" cy="210" r="260" fill="#9BC53D" opacity=".9"/><path d="M0 760 C 300 600 520 820 820 680 S 1200 600 1200 600 V900 H0Z" fill="#FAF7F2" opacity=".12"/>
+<text x="72" y="800" font-family="Bricolage Grotesque, DM Sans, sans-serif" font-weight="700" font-size="88" fill="#FAF7F2">Paintball &amp; tir</text>
+</svg>

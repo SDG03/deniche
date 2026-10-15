@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   Déniche — design tokens
+   Corail = réductions et CTA principaux uniquement.
+------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #faf7f2;
+  --cream-deep: #f3eee5;
+  --paper: #ffffff;
+  --ink: #14201b;
+  --ink-soft: #3d4a44;
+  --ink-mute: #5f6b65; /* AA sur crème (5.3:1) */
+  --forest: #1f3d2f;
+  --forest-soft: #e6ece8;
+  --coral: #ff5a36;
+  --coral-ink: #c2381a; /* texte corail AA sur blanc/crème */
+  --coral-soft: #ffe9e3;
+  --line: #e7e0d5;
+  --line-strong: #d6cdbf;
+  --sand: #efe6d8;
+  --success: #2f6b4a;
+  --danger: #b42318;
+
+  --radius-card: 16px;
+  --tabbar-h: 64px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-mute: var(--ink-mute);
+  --color-forest: var(--forest);
+  --color-forest-soft: var(--forest-soft);
+  --color-coral: var(--coral);
+  --color-coral-ink: var(--coral-ink);
+  --color-coral-soft: var(--coral-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-sand: var(--sand);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-dm-sans), ui-sans-serif, sans-serif;
+
+  --radius-card: var(--radius-card);
+
+  /* Échelle typographique (≈ ratio 1.2) */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-display: 2.25rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+
+  --animate-fade-up: fade-up 180ms ease-out both;
+  --animate-sheet-up: sheet-up 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade: fade 160ms ease-out both;
+  --animate-shimmer: shimmer 1.4s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
   }
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 72px;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--forest);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--forest);
+  color: var(--cream);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--cream-deep) 0%, var(--sand) 50%, var(--cream-deep) 100%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Leaflet : on harmonise avec la palette */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--cream-deep);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgb(20 32 27 / 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
 }

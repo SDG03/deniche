@@ -1,0 +1,20 @@
+{
+  "karting-indoor-herstal": ["karting-indoor-herstal:1", "karting-indoor-herstal:7", "karting-indoor-herstal:11"],
+  "karting-circuit-malmedy": ["karting-circuit-malmedy:0", "karting-circuit-malmedy:3", "karting-circuit-malmedy:11"],
+  "bloc-grivegnee": ["bloc-grivegnee:4", "bloc-grivegnee:3", "bloc-grivegnee:9"],
+  "falaise-aywaille": ["falaise-aywaille~2:1", "falaise-aywaille:5", "falaise-aywaille~2:0"],
+  "quad-durbuy": ["quad-durbuy~2:5", "quad-durbuy:4", "quad-durbuy~2:11"],
+  "buggy-aywaille": ["buggy-aywaille~2:5", "buggy-aywaille~2:6", "quad-durbuy:1"],
+  "paintball-malmedy": ["paintball-malmedy:1", "paintball-malmedy:10", "paintball-malmedy:11"],
+  "tir-arc-hesbaye": ["tir-arc-hesbaye~2:8", "tir-arc-hesbaye~2:5", "tir-arc-hesbaye~2:7"],
+  "kayak-ourthe-durbuy": ["kayak-ourthe-durbuy:2", "kayak-ourthe-durbuy:1", "kayak-ourthe-durbuy:7"],
+  "kayak-ambleve-aywaille": ["kayak-ourthe-durbuy:6", "kayak-ourthe-durbuy:8", "kayak-ambleve-aywaille:5"],
+  "trail-fagnes-malmedy": ["trail-fagnes-malmedy~2:4", "trail-fagnes-malmedy:9", "trail-fagnes-malmedy~2:3"],
+  "trail-nocturne-seraing": ["trail-fagnes-malmedy:8", "trail-fagnes-malmedy~2:11", "trail-nocturne-seraing:6"],
+  "trottinette-durbuy": ["trottinette-durbuy~3:0", "trottinette-durbuy~3:6", "trottinette-durbuy~2:7"],
+  "gaufres-liege": ["gaufres-liege:6", "gaufres-liege:3", "gaufres-liege:10"],
+  "ceramique-verviers": ["ceramique-verviers:0", "ceramique-verviers:3", "ceramique-verviers:6"],
+  "boulets-herstal": ["boulets-herstal:0", "boulets-herstal:10", "boulets-herstal:2"],
+  "anes-hesbaye": ["anes-hesbaye~2:2", "anes-hesbaye~2:0", "anes-hesbaye~2:1"],
+  "alpagas-verviers": ["alpagas-verviers~2:4", "alpagas-verviers~2:1", "alpagas-verviers~2:6"]
+}

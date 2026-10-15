@@ -1,0 +1,198 @@
+// Schéma Déniche — SQLite en local, compatible PostgreSQL (changer seulement `provider`).
+// Tous les montants sont en centimes (Int). Les dates sont stockées en UTC.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  USER
+  PARTNER
+}
+
+enum Setting {
+  INDOOR
+  OUTDOOR
+  MIXED
+}
+
+enum Level {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum CancellationPolicy {
+  FLEXIBLE // remboursé jusqu'à 24 h avant
+  MODERATE // remboursé jusqu'à 72 h avant
+  STRICT // non remboursable
+}
+
+enum BookingStatus {
+  PENDING // prix verrouillé, places bloquées, paiement en attente
+  CONFIRMED
+  CHECKED_IN
+  CANCELLED
+  EXPIRED
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String
+  role      Role       @default(USER)
+  partnerId String?
+  partner   Partner?   @relation(fields: [partnerId], references: [id])
+  createdAt DateTime   @default(now())
+  sessions  Session[]
+  bookings  Booking[]
+  favorites Favorite[]
+}
+
+model Session {
+  id        String   @id // jeton opaque stocké dans le cookie
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model LoginToken {
+  token     String    @id
+  email     String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Partner {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  city        String
+  description String
+  createdAt   DateTime   @default(now())
+  users       User[]
+  activities  Activity[]
+}
+
+model Activity {
+  id                 String             @id @default(cuid())
+  slug               String             @unique
+  partnerId          String
+  partner            Partner            @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  category           String
+  title              String
+  tagline            String
+  description        String
+  /// string[] — chemins publics des photos
+  images             Json
+  /// { author, license, source }[] — crédits alignés sur `images`
+  imageCredits       Json
+  address            String
+  city               String
+  latitude           Float
+  longitude          Float
+  durationMin        Int
+  minPeople          Int
+  maxPeople          Int
+  basePriceCents     Int
+  minAge             Int
+  setting            Setting
+  level              Level
+  accessibility      String
+  /// string[]
+  tags               Json
+  cancellationPolicy CancellationPolicy @default(MODERATE)
+  // --- tarification dynamique (voir src/lib/pricing.ts) ---
+  lastMinuteEnabled  Boolean            @default(true)
+  /// { minHours: number, pct: number }[] triés par minHours décroissant
+  discountTiers      Json
+  floorPct           Int                @default(50)
+  quotaPct           Int                @default(50)
+  fillBonusEnabled   Boolean            @default(true)
+  cutoffMinutes      Int                @default(30)
+  /// { weekday: 0-6, times: "HH:mm"[], capacity: number }[] — modèle hebdomadaire de créneaux
+  weeklyTemplate     Json
+  published          Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  slots              Slot[]
+  favorites          Favorite[]
+  reviews            Review[]
+
+  @@index([category])
+  @@index([partnerId])
+}
+
+model Slot {
+  id             String    @id @default(cuid())
+  activityId     String
+  activity       Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  startsAt       DateTime
+  capacity       Int
+  /// places vendues + places bloquées par un checkout en cours
+  bookedCount    Int       @default(0)
+  /// part de `bookedCount` vendue à prix réduit (pour le quota)
+  discountedSold Int       @default(0)
+  bookings       Booking[]
+
+  @@unique([activityId, startsAt])
+  @@index([startsAt])
+}
+
+model Booking {
+  id                 String        @id @default(cuid())
+  reference          String        @unique
+  userId             String
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slotId             String
+  slot               Slot          @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  people             Int
+  /// string[]
+  participantNames   Json
+  baseUnitPriceCents Int
+  unitPriceCents     Int
+  discountPct        Int
+  discountedSeats    Int
+  totalCents         Int
+  status             BookingStatus @default(PENDING)
+  priceLockedUntil   DateTime
+  paymentProvider    String?
+  paymentRef         String?
+  checkinCode        String
+  createdAt          DateTime      @default(now())
+  confirmedAt        DateTime?
+  cancelledAt        DateTime?
+  checkedInAt        DateTime?
+
+  @@index([userId])
+  @@index([slotId])
+  @@index([status, priceLockedUntil])
+}
+
+model Favorite {
+  userId     String
+  activityId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@id([userId, activityId])
+}
+
+/// Avis de maquette (pas de vrais avis dans le prototype)
+model Review {
+  id         String   @id @default(cuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  authorName String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+}

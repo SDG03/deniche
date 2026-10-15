@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Trail">
+<rect width="1200" height="900" fill="#2F4F3A"/>
+<rect x="720" y="-80" width="560" height="560" rx="120" transform="rotate(18 1000 200)" fill="#E76F51" opacity=".85"/><path d="M0 820 Q 600 640 1200 820 V900 H0Z" fill="#FAF7F2" opacity=".14"/>
+<text x="72" y="800" font-family="Bricolage Grotesque, DM Sans, sans-serif" font-weight="700" font-size="88" fill="#FAF7F2">Trail</text>
+</svg>
