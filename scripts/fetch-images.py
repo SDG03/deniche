@@ -125,11 +125,23 @@ def candidates(slugs):
         print(slug, len(cands), flush=True)
 
 
+def clean_author(a):
+    # Certains fichiers Commons mettent la mention de licence dans le champ « auteur ».
+    if re.search(r"copyright holder|hereby publish|^Auteur inconnu$", a, re.I):
+        return "Contributeur Wikimedia Commons"
+    return re.sub(r"^Photo by\s+", "", a).strip()
+
+
 def download():
     os.makedirs(DEST, exist_ok=True)
     manifest = json.load(open(os.path.join(WORK, "manifest.json"), encoding="utf-8"))
     picks = json.load(open(PICKS, encoding="utf-8"))
     credits = {}
+    prev_path = os.path.join(ROOT, "prisma", "image-credits.json")
+    previous = {}
+    if os.path.exists(prev_path):
+        for items in json.load(open(prev_path, encoding="utf-8")).values():
+            previous.update({it["file"]: it["source"] for it in items})
     for slug, idxs in picks.items():
         credits[slug] = []
         for n, ref in enumerate(idxs, start=1):
@@ -137,14 +149,15 @@ def download():
             c = manifest[key][int(i)]
             name = f"{slug}-{n}.jpg"
             out = os.path.join(DEST, name)
-            if not os.path.exists(out) or Image.open(out).size[0] < 1000:
+            stale = previous.get(name) not in (None, c["page"])
+            if stale or not os.path.exists(out) or Image.open(out).size[0] < 1000:
                 # Wikimedia n'accepte que des largeurs de vignette standard (… 960, 1280, 1920)
                 thumb = re.sub(r"/\d+px-", "/1280px-", c["thumb"])
                 im = Image.open(io.BytesIO(get(thumb))).convert("RGB")
                 im.thumbnail((1280, 1280))
                 im.save(out, quality=82, optimize=True, progressive=True)
                 time.sleep(0.3)
-            credits[slug].append({"file": name, "author": c["artist"], "license": c["license"], "source": c["page"]})
+            credits[slug].append({"file": name, "author": clean_author(c["artist"]), "license": c["license"], "source": c["page"]})
             print("ok", name, flush=True)
     json.dump(credits, open(os.path.join(ROOT, "prisma", "image-credits.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)

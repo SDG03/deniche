@@ -11,7 +11,7 @@ Redimensionnées à 1280 px. Les licences CC BY-SA s'appliquent aux images, pas 
 ## karting-circuit-malmedy
 - `karting-circuit-malmedy-1.jpg` — Claudio PlanetKart — Public domain — https://commons.wikimedia.org/wiki/File:Largada_Stock125_Foto_Claudio_Reis.jpg
 - `karting-circuit-malmedy-2.jpg` — Smileverse — CC BY 3.0 — https://commons.wikimedia.org/wiki/File:Kart_Matrix_Team%27s_Inaugural_Drive.jpg
-- `karting-circuit-malmedy-3.jpg` — Auteur inconnu — Public domain — https://commons.wikimedia.org/wiki/File:Kart_Racing_1.jpg
+- `karting-circuit-malmedy-3.jpg` — Contributeur Wikimedia Commons — Public domain — https://commons.wikimedia.org/wiki/File:Kart_Racing_1.jpg
 
 ## bloc-grivegnee
 - `bloc-grivegnee-1.jpg` — ColdSleeper — CC BY 2.0 — https://commons.wikimedia.org/wiki/File:%E3%83%9C%E3%83%AB%E3%83%80%E3%83%AA%E3%83%B3%E3%82%B0_(7955003588).jpg
@@ -24,17 +24,17 @@ Redimensionnées à 1280 px. Les licences CC BY-SA s'appliquent aux images, pas 
 - `falaise-aywaille-3.jpg` — Jeffrey Beall — CC BY 4.0 — https://commons.wikimedia.org/wiki/File:Overhanging_cliff_in_Rifle_Mountain_Park.JPG
 
 ## quad-durbuy
-- `quad-durbuy-1.jpg` — 93rd "Kholodnyi Yar" Mechanized Brigade — CC BY 4.0 — https://commons.wikimedia.org/wiki/File:UA_soldier_CFMOTO_quad.jpg
+- `quad-durbuy-1.jpg` — Rebekah Tsadik — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:Family_at_the_Beach.jpg
 - `quad-durbuy-2.jpg` — Fort Rucker — CC BY 2.0 — https://commons.wikimedia.org/wiki/File:ATV_Trail_Ride_(8054186496).jpg
-- `quad-durbuy-3.jpg` — Rebekah Tsadik — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:Family_at_the_Beach.jpg
+- `quad-durbuy-3.jpg` — Eric Jones — CC BY-SA 2.0 — https://commons.wikimedia.org/wiki/File:Quad-bike_riding_grazier_checking_on_his_flock_-_geograph.org.uk_-_4690258.jpg
 
 ## buggy-aywaille
-- `buggy-aywaille-1.jpg` — I, the copyright holder of this work, hereby publish it under the following lice — CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:CJ_Greaves_Super_Buggy_Crandon_2010.jpg
-- `buggy-aywaille-2.jpg` — I, the copyright holder of this work, hereby publish it under the following lice — CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:CJ_Greaves_Jumping_Super_Buggy_Oshkosh_2011.jpg
+- `buggy-aywaille-1.jpg` — Contributeur Wikimedia Commons — CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:CJ_Greaves_Super_Buggy_Crandon_2010.jpg
+- `buggy-aywaille-2.jpg` — Contributeur Wikimedia Commons — CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:CJ_Greaves_Jumping_Super_Buggy_Oshkosh_2011.jpg
 - `buggy-aywaille-3.jpg` — U.S. Fish and Wildlife Service Southeast Region — Public domain — https://commons.wikimedia.org/wiki/File:ATV_on_a_muddy_trail_(5494218531).jpg
 
 ## paintball-malmedy
-- `paintball-malmedy-1.jpg` — Petty Officer 2nd Class David Brandenburg — Public domain — https://commons.wikimedia.org/wiki/File:Force-on-force_training,_Quick_Shot_2013_130215-N-UD522-203.jpg
+- `paintball-malmedy-1.jpg` — Ken Thomas — Public domain — https://commons.wikimedia.org/wiki/File:Paintball-27527-2.jpg
 - `paintball-malmedy-2.jpg` — Ken Thomas — Public domain — https://commons.wikimedia.org/wiki/File:Paintball-27527-1.jpg
 - `paintball-malmedy-3.jpg` — Stefan Krause, Germany — CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:SupAir_Player.jpg
 
@@ -61,7 +61,7 @@ Redimensionnées à 1280 px. Les licences CC BY-SA s'appliquent aux images, pas 
 ## trail-nocturne-seraing
 - `trail-nocturne-seraing-1.jpg` — Trougnouf (Benoit Brummer) — CC BY 4.0 — https://commons.wikimedia.org/wiki/File:Bois_Raquet,_in_the_High_Fens_%E2%80%93_Eifel_Nature_Park_(DSCF6655).jpg
 - `trail-nocturne-seraing-2.jpg` — bugflickr from Australia — CC BY-SA 2.0 — https://commons.wikimedia.org/wiki/File:Mountain_running_2.jpg
-- `trail-nocturne-seraing-3.jpg` — Photo by Joe Mabel — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:McLane_Creek_Nature_Trail_07_-_trail_running_next_to_beaver_dam.jpg
+- `trail-nocturne-seraing-3.jpg` — Joe Mabel — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:McLane_Creek_Nature_Trail_07_-_trail_running_next_to_beaver_dam.jpg
 
 ## trottinette-durbuy
 - `trottinette-durbuy-1.jpg` — Ji-Elle — CC BY-SA 3.0 — https://commons.wikimedia.org/wiki/File:Zinal-Trottinettes_tout-terrain.jpg
@@ -70,7 +70,7 @@ Redimensionnées à 1280 px. Les licences CC BY-SA s'appliquent aux images, pas 
 
 ## gaufres-liege
 - `gaufres-liege-1.jpg` — Ji-Elle — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:FIG_2016-Gaufres_belges_(2).jpg
-- `gaufres-liege-2.jpg` — Auteur inconnu — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:Li%C3%A8ge_Manila10.jpg
+- `gaufres-liege-2.jpg` — Contributeur Wikimedia Commons — CC BY-SA 4.0 — https://commons.wikimedia.org/wiki/File:Li%C3%A8ge_Manila10.jpg
 - `gaufres-liege-3.jpg` — Parkerman &amp; Christie from San Diego, USA — CC BY 2.0 — https://commons.wikimedia.org/wiki/File:Li%C3%A8ge_waffles_with_berries.jpg
 
 ## ceramique-verviers

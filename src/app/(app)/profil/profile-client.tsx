@@ -18,7 +18,7 @@ export function PositionCard({ isDefault }: { isDefault: boolean }) {
       <span className="grid size-11 place-items-center rounded-full bg-forest-soft text-forest">
         {isDefault ? <MapPin aria-hidden className="size-5" /> : <LocateFixed aria-hidden className="size-5" />}
       </span>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-[11rem] flex-1">
         <div className="text-xs font-medium text-ink-mute">{t.position}</div>
         <div className="font-semibold">{isDefault ? t.locationDefault : t.locationMine}</div>
         {state === "denied" && <div className="text-xs text-danger">{t.locationDenied}</div>}
