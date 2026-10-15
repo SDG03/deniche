@@ -96,7 +96,11 @@ export async function payBooking(_: PayState, formData: FormData): Promise<PaySt
 
   if (result.status === "declined") return { error: result.message };
   if (result.status === "redirect") {
-    await db.booking.update({ where: { id: booking.id }, data: { paymentProvider: provider.id, paymentRef: result.ref } });
+    // Le client est chez Stripe : on prolonge le blocage jusqu'à l'expiration de la session Stripe (31 min).
+    await db.booking.update({
+      where: { id: booking.id },
+      data: { paymentProvider: provider.id, paymentRef: result.ref, priceLockedUntil: new Date(Date.now() + 31 * 60_000) },
+    });
     redirect(result.url);
   }
 
