@@ -1,0 +1,21 @@
+# Déploiement Render (offre gratuite) : New → Blueprint → choisir ce dépôt.
+# La base SQLite est recréée et remplie à chaque démarrage : la démo repart
+# toujours propre, avec des créneaux calculés à partir du jour même.
+services:
+  - type: web
+    name: deniche
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci && npm run build
+    startCommand: npm run seed && npm start
+    healthCheckPath: /hors-ligne
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: TZ
+        value: Europe/Brussels
+      - key: DATABASE_URL
+        value: file:./prisma/dev.db
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
