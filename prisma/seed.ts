@@ -67,6 +67,7 @@ function imagesFor(slug: string, category: string) {
 async function main() {
   const now = new Date();
   console.log("Remise à zéro de la base…");
+  await db.reward.deleteMany();
   await db.booking.deleteMany();
   await db.favorite.deleteMany();
   await db.review.deleteMany();
@@ -248,6 +249,7 @@ async function main() {
     { slug: "kayak-ourthe-durbuy", when: "future" as const, people: 2 },
     { slug: "bloc-grivegnee", when: "past" as const, people: 1 },
     { slug: "gaufres-liege", when: "past" as const, people: 2 },
+    { slug: "paintball-malmedy", when: "past" as const, people: 2 },
   ];
   for (const b of demoBookings) {
     const { activity, slot } = await pickSlot(b.slug, b.when);
@@ -287,6 +289,9 @@ async function main() {
       data: { bookedCount: { increment: b.people }, discountedSold: { increment: q.discountedSeats } },
     });
   }
+  // Carte fidélité de Camille : 3 sorties validées → un premier cadeau à utiliser.
+  await db.reward.create({ data: { userId: demoUser.id, rank: 1, kind: "drink", code: "CADEAU-DEMO1" } });
+
   for (const slug of ["alpagas-verviers", "ceramique-verviers"]) {
     const activity = await db.activity.findUniqueOrThrow({ where: { slug } });
     await db.favorite.create({ data: { userId: demoUser.id, activityId: activity.id } });

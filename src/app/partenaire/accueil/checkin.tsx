@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, CircleAlert, Camera, CameraOff, Search, Users } from "lucide-react";
+import { CheckCircle2, Gift, CircleAlert, Camera, CameraOff, Search, Users } from "lucide-react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { lookupCheckin, type CheckinResult } from "@/app/actions/partner";
 import { Button, buttonClass } from "@/components/ui/button";
@@ -159,6 +159,23 @@ export function Checkin() {
               {c.people(b.people, b.names)}
             </div>
             <div className="tabular mt-1 text-xs opacity-70">{b.reference}</div>
+            {b.perk && (
+              <p
+                className={cn(
+                  "mt-3 flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold",
+                  state.status === "checked" ? "bg-cream/15 text-cream" : "bg-coral-soft text-coral-ink",
+                )}
+              >
+                <Gift aria-hidden className="size-4 shrink-0" />
+                {b.perkUsed || state.status === "checked" ? copy.loyalty.given(b.perk) : copy.loyalty.toGive(b.perk)}
+              </p>
+            )}
+            {state.newPerk && (
+              <p className="mt-2 flex items-center gap-2 text-sm text-cream/90">
+                <Gift aria-hidden className="size-4 shrink-0" />
+                {copy.loyalty.earnedNow(state.newPerk)}
+              </p>
+            )}
             {state.status === "found" && (
               <form action={action} className="mt-4">
                 <input type="hidden" name="confirm" value={b.id} />

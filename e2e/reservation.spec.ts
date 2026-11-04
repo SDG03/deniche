@@ -88,9 +88,15 @@ test.describe("Découverte", () => {
     await expect(page.locator(".leaflet-container")).toBeVisible();
   });
 
-  test("Surprends-moi ouvre une activité avec un créneau présélectionné", async ({ page }) => {
+  test("Surprends-moi : la roue tire une activité et ouvre son créneau", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
     await page.getByRole("link", { name: "Surprends-moi" }).first().click();
+    await expect(page).toHaveURL(/\/surprise$/);
+    await page.getByRole("button", { name: "Lancer la roue" }).click();
+    await expect(page.getByText("La roue a parlé")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Relancer la roue" })).toBeVisible();
+    await page.getByRole("link", { name: "J'y vais" }).click();
     await expect(page).toHaveURL(/\/activite\/.+creneau=.+surprise=1/);
     await expect(page.getByText(/Tirée au sort pour toi/)).toBeVisible();
   });

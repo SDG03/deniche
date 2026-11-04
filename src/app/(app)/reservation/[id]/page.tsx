@@ -1,4 +1,4 @@
-import { CalendarPlus, CircleCheck, MapPin, Navigation, Users } from "lucide-react";
+import { CalendarPlus, CircleCheck, Gift, MapPin, Navigation, Users } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -11,6 +11,7 @@ import { canCancel, cancellationDeadline, getBookingForUser } from "@/lib/bookin
 import { cn } from "@/lib/cn";
 import { copy } from "@/lib/copy";
 import { formatDayLong, formatPrice, formatTime } from "@/lib/format";
+import { perkLabel } from "@/lib/loyalty";
 import { qrPayload, qrSvg } from "@/lib/qr";
 
 export const metadata: Metadata = { title: copy.bookings.detailTitle, robots: { index: false } };
@@ -93,6 +94,12 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             <span className="absolute top-1/2 -right-3 size-6 -translate-y-1/2 rounded-full bg-cream" />
           </div>
 
+          {booking.reward && booking.status !== "CANCELLED" && (
+            <p className="mx-5 mb-4 flex items-center gap-2 rounded-xl bg-coral-soft px-3.5 py-2.5 text-sm font-semibold text-coral-ink">
+              <Gift aria-hidden className="size-4 shrink-0" />
+              {copy.loyalty.included(perkLabel(booking.reward.kind))}
+            </p>
+          )}
           <dl className="grid grid-cols-2 gap-x-4 gap-y-3 px-5 pb-5 text-sm">
             <div>
               <dt className="text-xs text-ink-mute">{t.ref}</dt>

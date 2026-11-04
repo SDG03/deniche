@@ -23,6 +23,10 @@ export async function releaseExpiredHolds(now = new Date()) {
           where: { id: b.slotId },
           data: { bookedCount: { decrement: b.people }, discountedSold: { decrement: b.discountedSeats } },
         });
+        await tx.reward.updateMany({
+          where: { bookingId: b.id, status: "ATTACHED" },
+          data: { status: "AVAILABLE", bookingId: null },
+        });
       }
     });
   }

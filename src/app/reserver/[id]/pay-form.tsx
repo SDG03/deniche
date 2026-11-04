@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, Lock, Smartphone } from "lucide-react";
+import { CreditCard, Gift, Lock, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { payBooking, type PayState } from "@/app/actions/booking";
@@ -25,6 +25,7 @@ export function PayForm({
   lockedUntil,
   restartHref,
   provider,
+  perk,
 }: {
   bookingId: string;
   people: number;
@@ -33,6 +34,8 @@ export function PayForm({
   lockedUntil: string;
   restartHref: string;
   provider: "mock" | "stripe";
+  /** cadeau fidélité disponible */
+  perk?: string;
 }) {
   const [state, action, pending] = useActionState<PayState, FormData>(payBooking, {});
   const [method, setMethod] = useState<"card" | "bancontact">("card");
@@ -163,6 +166,19 @@ export function PayForm({
               </div>
             )}
           </fieldset>
+
+          {perk && (
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-coral/40 bg-coral-soft/60 p-4">
+              <input type="checkbox" name="useReward" defaultChecked className="mt-0.5 size-5 shrink-0 accent-forest" />
+              <span>
+                <span className="flex items-center gap-1.5 font-semibold">
+                  <Gift aria-hidden className="size-4 text-coral-ink" />
+                  {copy.loyalty.useAtCheckout}
+                </span>
+                <span className="mt-0.5 block text-sm text-ink-soft">{copy.loyalty.useAtCheckoutHint(perk)}</span>
+              </span>
+            </label>
+          )}
 
           {state.error && (
             <p role="alert" className="rounded-xl bg-coral-soft px-4 py-3 text-sm font-medium text-coral-ink">

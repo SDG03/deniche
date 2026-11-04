@@ -10,6 +10,8 @@ import { imageAlt } from "@/lib/catalog";
 import { copy } from "@/lib/copy";
 import { formatDayLong, formatMinutes, formatPrice, formatTime } from "@/lib/format";
 import { releaseExpiredHolds } from "@/lib/inventory";
+import { perkLabel } from "@/lib/loyalty";
+import { firstAvailableReward } from "@/lib/rewards";
 import { getPaymentProvider } from "@/lib/payments";
 import { PayForm } from "./pay-form";
 
@@ -32,6 +34,7 @@ export default async function CheckoutPage({ params }: PageProps<"/reserver/[id]
   const saved = booking.baseUnitPriceCents * booking.people - booking.totalCents;
   const restartHref = `/activite/${a.slug}?creneau=${slot.id}`;
   const firstName = user.name.replace(/\s*\(démo\)$/, "").split(" ")[0];
+  const reward = await firstAvailableReward(user.id);
 
   return (
     <main id="contenu" className="mx-auto max-w-5xl px-4 pt-4 pb-10 md:px-6 md:pt-10">
@@ -58,6 +61,7 @@ export default async function CheckoutPage({ params }: PageProps<"/reserver/[id]
               lockedUntil={booking.priceLockedUntil.toISOString()}
               restartHref={restartHref}
               provider={getPaymentProvider().id}
+              perk={reward ? perkLabel(reward.kind) : undefined}
             />
           ) : (
             <div className="rounded-2xl border border-line bg-paper p-5">

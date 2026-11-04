@@ -13,6 +13,8 @@ import { db } from "@/lib/db";
 import { topUpSlots } from "@/lib/inventory";
 import { getPartnerActivity } from "@/lib/partner";
 import { DEFAULT_TIERS } from "@/lib/pricing";
+import { perkLabel } from "@/lib/loyalty";
+import { grantRewards, redeemReward } from "@/lib/rewards";
 import { weeklyTemplateSchema } from "@/lib/schedule";
 import { copy } from "@/lib/copy";
 
@@ -239,7 +241,12 @@ export type CheckinResult = {
     activity: string;
     startsAt: string;
     names: string[];
+    /** cadeau fidélité rattaché à cette réservation (libellé) */
+    perk?: string;
+    perkUsed?: boolean;
   };
+  /** cadeau débloqué par cette validation */
+  newPerk?: string;
 };
 
 async function findForPartner(partnerId: string, raw: string) {
@@ -253,7 +260,7 @@ async function findForPartner(partnerId: string, raw: string) {
       : { checkinCode: input };
   return db.booking.findFirst({
     where: { ...where, slot: { activity: { partnerId } } },
-    include: { user: true, slot: { include: { activity: true } } },
+    include: { user: true, slot: { include: { activity: true } }, reward: true },
     orderBy: { slot: { startsAt: "desc" } },
   });
 }
@@ -270,9 +277,10 @@ export async function lookupCheckin(_: CheckinResult, formData: FormData): Promi
       where: { id: b.id, status: "CONFIRMED" },
       data: { status: "CHECKED_IN", checkedInAt: new Date() },
     });
+    const newPerk = r.count ? await afterCheckin(b.id, b.userId) : undefined;
     revalidatePath("/partenaire", "layout");
     const full = await findForPartner(partnerId, b.reference);
-    return { status: r.count ? "checked" : "already", booking: full ? view(full) : undefined };
+    return { status: r.count ? "checked" : "already", booking: full ? view(full) : undefined, newPerk };
   }
   if (normalizeCode(raw).length < 6) return { status: "not_found" };
   const b = await findForPartner(partnerId, raw);
@@ -291,15 +299,31 @@ function view(b: NonNullable<Awaited<ReturnType<typeof findForPartner>>>) {
     activity: b.slot.activity.title,
     startsAt: b.slot.startsAt.toISOString(),
     names: b.participantNames as string[],
+    perk: b.reward ? perkLabel(b.reward.kind) : undefined,
+    perkUsed: b.reward?.status === "USED",
   };
+}
+
+/** Arrivée validée : on remet le cadeau rattaché et on crédite les nouveaux tampons. */
+async function afterCheckin(bookingId: string, userId: string) {
+  await redeemReward(bookingId);
+  const before = await db.reward.count({ where: { userId } });
+  await grantRewards(userId);
+  const fresh = await db.reward.findMany({ where: { userId }, orderBy: { rank: "desc" }, take: 1 });
+  const after = await db.reward.count({ where: { userId } });
+  return after > before && fresh[0] ? perkLabel(fresh[0].kind) : undefined;
 }
 
 export async function quickCheckin(formData: FormData) {
   const { partnerId } = await requirePartner();
   const id = String(formData.get("bookingId") ?? "");
-  await db.booking.updateMany({
+  const r = await db.booking.updateMany({
     where: { id, status: "CONFIRMED", slot: { activity: { partnerId } } },
     data: { status: "CHECKED_IN", checkedInAt: new Date() },
   });
+  if (r.count) {
+    const b = await db.booking.findUniqueOrThrow({ where: { id }, select: { userId: true } });
+    await afterCheckin(id, b.userId);
+  }
   revalidatePath("/partenaire", "layout");
 }

@@ -105,6 +105,7 @@ export async function getPartnerBookings(
     include: {
       user: { select: { name: true } },
       slot: { include: { activity: { select: { title: true, slug: true } } } },
+      reward: { select: { kind: true, status: true } },
     },
     orderBy: opts.orderBy === "slot" ? { slot: { startsAt: "asc" } } : { createdAt: "desc" },
     take: opts.take ?? 100,

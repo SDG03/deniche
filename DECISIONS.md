@@ -31,3 +31,11 @@ Choix faits en autonomie pendant la construction du prototype, avec la raison en
 - **Temps de trajet** : estimé (vol d'oiseau × 1,3, 30 km/h en ville puis 70 km/h), et présenté comme une estimation. Pas de service de calcul d'itinéraire.
 - **Position par défaut** : place Saint-Lambert à Liège quand la géolocalisation est refusée. La position est stockée dans un cookie pour que le serveur puisse trier par distance.
 - **Prestataires réels** : aucun n'apparaît dans l'interface. Les 5 partenaires de la démo sont fictifs et suffixés « (démo) ». La liste de prospection, corrigée, est dans `data/partenaires-candidats.json`. Correction notable : Durbuy est sur l'Ourthe, pas sur la Lesse.
+
+## Roue de la chance et fidélité (ajout après la v1)
+
+- **Tirage côté serveur** : la roue n'est qu'une animation. Le serveur choisit l'activité, comme avant, et la roue « atterrit » dessus. Le résultat ne dépend donc pas du client.
+- **Tampon à l'arrivée, pas à la réservation** : on récompense les gens qui viennent vraiment, et une réservation annulée ne fait pas gagner de tampon.
+- **Cadeaux sans impact sur le prix** (boisson, en-cas, souvenir) : pas d'interaction avec la tarification dynamique ni avec le quota. Qui finance le cadeau (partenaire ou Déniche) reste à décider avec les partenaires.
+- **Un cadeau n'est accordé qu'une fois** : contrainte unique (utilisateur, rang), donc deux validations simultanées ne créent pas de doublon.
+

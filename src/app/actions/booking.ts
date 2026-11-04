@@ -11,6 +11,7 @@ import { db } from "@/lib/db";
 import { formatPrice, formatSlotWhen } from "@/lib/format";
 import { sendMail } from "@/lib/mail";
 import { getPaymentProvider } from "@/lib/payments";
+import { attachReward, firstAvailableReward, releaseReward as releaseRewardFor } from "@/lib/rewards";
 
 export type CheckoutState = { error?: string };
 
@@ -80,6 +81,12 @@ export async function payBooking(_: PayState, formData: FormData): Promise<PaySt
 
   await db.booking.update({ where: { id: booking.id }, data: { participantNames: names } });
 
+  // Cadeau fidélité : rattaché avant le paiement, libéré automatiquement si la réservation n'aboutit pas.
+  if (formData.get("useReward") === "on") {
+    const reward = await firstAvailableReward(user.id);
+    if (reward) await attachReward(reward.id, user.id, booking.id);
+  }
+
   const provider = getPaymentProvider();
   const h = await headers();
   const baseUrl = process.env.APP_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
@@ -94,7 +101,10 @@ export async function payBooking(_: PayState, formData: FormData): Promise<PaySt
     { method, cardNumber, baseUrl },
   );
 
-  if (result.status === "declined") return { error: result.message };
+  if (result.status === "declined") {
+    await releaseRewardFor(booking.id);
+    return { error: result.message };
+  }
   if (result.status === "redirect") {
     // Le client est chez Stripe : on prolonge le blocage jusqu'à l'expiration de la session Stripe (31 min).
     await db.booking.update({
@@ -113,6 +123,7 @@ export async function payBooking(_: PayState, formData: FormData): Promise<PaySt
   } catch (e) {
     if (e instanceof BookingError) {
       await provider.refund(result.ref, booking.totalCents);
+      await releaseRewardFor(booking.id);
       return { error: copy.booking.lockExpired };
     }
     throw e;

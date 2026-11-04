@@ -8,6 +8,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { getUserPosition } from "@/lib/catalog";
 import { copy } from "@/lib/copy";
 import { db } from "@/lib/db";
+import { LoyaltyCard } from "@/components/loyalty-card";
+import { getLoyalty } from "@/lib/rewards";
 import { InstallButton, PositionCard } from "./profile-client";
 
 export const metadata: Metadata = { title: copy.profile.title };
@@ -26,6 +28,7 @@ export default async function ProfilePage() {
   const stats = user
     ? await db.booking.count({ where: { userId: user.id, status: { in: ["CONFIRMED", "CHECKED_IN"] } } })
     : 0;
+  const loyalty = user ? await getLoyalty(user.id) : null;
 
   return (
     <div className="mx-auto max-w-2xl px-4 pt-6 md:px-6 md:pt-10">
@@ -52,6 +55,21 @@ export default async function ProfilePage() {
           >
             {copy.auth.title}
           </Link>
+        </div>
+      )}
+
+      {loyalty && (
+        <div className="mt-6">
+          <LoyaltyCard
+            card={loyalty.card}
+            rewards={loyalty.rewards.map((r) => ({
+              id: r.id,
+              kind: r.kind,
+              code: r.code,
+              status: r.status,
+              activity: r.booking?.slot.activity.title,
+            }))}
+          />
         </div>
       )}
 

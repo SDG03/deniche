@@ -53,6 +53,14 @@ On peut aussi saisir n'importe quel e-mail : le **lien magique** est simulé et 
 
 ---
 
+## Roue de la chance et carte fidélité
+
+- **Surprends-moi** ouvre une roue de 8 activités (une par catégorie, la plus proche). Le tirage est fait par le serveur, avec la même pondération qu'avant : catégories jamais essayées, activités à moins de 40 km, créneaux en réduction. La roue s'arrête ensuite sur l'activité tirée. Avec « mouvement réduit » activé, elle ne tourne pas.
+- **Carte fidélité** (Profil) : un tampon par sortie **validée à l'arrivée** par le partenaire. Tous les 3 tampons, un cadeau sur place (boisson offerte, en-cas offert, petit souvenir). Au paiement, le client coche « Utiliser mon cadeau ». Le partenaire voit « Cadeau à remettre » en validant l'arrivée, et le cadeau passe alors en « utilisé ». Si la réservation est annulée ou expire, le cadeau redevient disponible. Les cadeaux ne changent pas le prix payé.
+- Compte démo : Camille a déjà 3 sorties validées et une boisson offerte à utiliser.
+
+---
+
 ## Tarification dynamique
 
 Le cœur du produit est une fonction pure, testée : [`src/lib/pricing.ts`](src/lib/pricing.ts)
@@ -106,7 +114,7 @@ Les choix faits en cours de route sont expliqués dans [`DECISIONS.md`](DECISION
 |---|---|
 | `npm run dev` | serveur de développement |
 | `npm run seed` | crée le schéma et (re)génère les données de démo |
-| `npm test` | tests Vitest (55 tests) |
+| `npm test` | tests Vitest (59 tests) |
 | `npm run e2e` | tests Playwright (lance le serveur si besoin). La première fois : `npx playwright install chromium` |
 | `npm run build` / `npm start` | build de production (le service worker n'est actif qu'en production) |
 | `npm run lint` · `npm run typecheck` · `npm run format` | qualité |
@@ -165,7 +173,7 @@ data/                 partenaires-candidats.json (prospection, jamais affiché)
 Hors périmètre pour ce prototype :
 
 - **Paiement partagé entre amis** : chacun paie sa place depuis le lien de partage, avec un délai pour que le groupe se complète.
-- **Programme de fidélité** : badges par catégorie essayée, une activité offerte après 5.
+- **Fidélité, plus loin** : cadeaux choisis et financés par chaque partenaire, badges par catégorie essayée, parrainage.
 - **Vrais avis**, vérifiés : seulement après une arrivée validée.
 - **Application native** (iOS/Android) : notifications « −40 % sur ton activité favorite ».
 - Alertes de prix sur un créneau, liste d'attente quand c'est complet.

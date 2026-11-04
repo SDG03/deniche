@@ -107,6 +107,11 @@ export async function releaseHold(
       where: { id: b.slotId },
       data: { bookedCount: { decrement: b.people }, discountedSold: { decrement: b.discountedSeats } },
     });
+    // Un cadeau fidélité rattaché redevient disponible.
+    await tx.reward.updateMany({
+      where: { bookingId, status: "ATTACHED" },
+      data: { status: "AVAILABLE", bookingId: null },
+    });
     return true;
   });
 }
@@ -145,7 +150,7 @@ export function canCancel(policy: keyof typeof CANCEL_HOURS, startsAt: Date, now
 export async function getBookingForUser(bookingId: string, userId: string) {
   const b = await db.booking.findUnique({
     where: { id: bookingId },
-    include: { slot: { include: { activity: { include: { partner: true } } } } },
+    include: { slot: { include: { activity: { include: { partner: true } } } }, reward: true },
   });
   if (!b || b.userId !== userId) return null;
   return b;

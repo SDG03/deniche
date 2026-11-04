@@ -41,6 +41,12 @@ enum BookingStatus {
   EXPIRED
 }
 
+enum RewardStatus {
+  AVAILABLE // gagné, pas encore utilisé
+  ATTACHED // rattaché à une réservation payée, à remettre à l'arrivée
+  USED // remis par le partenaire
+}
+
 model User {
   id        String     @id @default(cuid())
   email     String     @unique
@@ -52,6 +58,7 @@ model User {
   sessions  Session[]
   bookings  Booking[]
   favorites Favorite[]
+  rewards   Reward[]
 }
 
 model Session {
@@ -170,6 +177,7 @@ model Booking {
   confirmedAt        DateTime?
   cancelledAt        DateTime?
   checkedInAt        DateTime?
+  reward             Reward?
 
   @@index([userId])
   @@index([slotId])
@@ -195,4 +203,23 @@ model Review {
   rating     Int
   comment    String
   createdAt  DateTime @default(now())
+}
+
+/// Carte fidélité : un cadeau tous les 3 tampons (sorties validées à l'arrivée).
+model Reward {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// clé du cadeau (voir src/lib/loyalty.ts)
+  kind      String
+  code      String       @unique
+  status    RewardStatus @default(AVAILABLE)
+  /// rang du cadeau sur la carte (1er, 2e…) : garantit qu'on ne l'accorde qu'une fois
+  rank      Int
+  bookingId String?      @unique
+  booking   Booking?     @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+  usedAt    DateTime?
+
+  @@unique([userId, rank])
 }

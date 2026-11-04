@@ -1,8 +1,9 @@
-import { Check } from "lucide-react";
+import { Check, Gift } from "lucide-react";
 import { quickCheckin } from "@/app/actions/partner";
 import { cn } from "@/lib/cn";
 import { copy } from "@/lib/copy";
 import { formatPrice, formatSlotWhen } from "@/lib/format";
+import { perkLabel } from "@/lib/loyalty";
 
 export type PartnerBooking = {
   id: string;
@@ -14,6 +15,7 @@ export type PartnerBooking = {
   createdAt: Date;
   user: { name: string };
   slot: { startsAt: Date; activity: { title: string } };
+  reward?: { kind: string; status: string } | null;
 };
 
 export function BookingRow({ b, now, showActivity = true }: { b: PartnerBooking; now: Date; showActivity?: boolean }) {
@@ -33,6 +35,12 @@ export function BookingRow({ b, now, showActivity = true }: { b: PartnerBooking;
           {isNew && (
             <span className="rounded-full bg-coral px-2 py-0.5 text-2xs font-bold text-ink">
               {copy.partnerUi.row.isNew}
+            </span>
+          )}
+          {b.reward && b.status !== "CANCELLED" && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-sand px-2 py-0.5 text-2xs font-semibold text-ink-soft">
+              <Gift aria-hidden className="size-3" />
+              {perkLabel(b.reward.kind)}
             </span>
           )}
           {lastMinute && b.status !== "CANCELLED" && (

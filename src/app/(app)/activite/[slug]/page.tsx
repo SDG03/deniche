@@ -114,7 +114,7 @@ export default async function ActivityPage({ params, searchParams }: PageProps<"
                 <Sparkles aria-hidden className="size-4" />
                 {fromSurprise ? t.surpriseNote : t.sharedSlot}
                 {fromSurprise && (
-                  <a href={`/surprise?sauf=${slug}`} className="underline underline-offset-2">
+                  <a href="/surprise" className="underline underline-offset-2">
                     {t.reroll}
                   </a>
                 )}
