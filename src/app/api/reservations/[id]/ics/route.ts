@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { getBookingForUser } from "@/lib/booking";
+import { publicOrigin } from "@/lib/http";
 import { buildIcs } from "@/lib/ics";
 
 export async function GET(req: NextRequest, ctx: RouteContext<"/api/reservations/[id]/ics">) {
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest, ctx: RouteContext<"/api/reservations
     location: a.address,
     start: b.slot.startsAt,
     durationMin: a.durationMin,
-    url: new URL(`/reservation/${b.id}`, req.url).toString(),
+    url: `${publicOrigin(req)}/reservation/${b.id}`,
   });
   return new NextResponse(ics, {
     headers: {

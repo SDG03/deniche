@@ -1,6 +1,7 @@
-import { NextResponse, type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { safeNext, startSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { redirectTo } from "@/lib/http";
 
 /** Lien magique : consomme le jeton, crée le compte au besoin, ouvre la session. */
 export async function GET(req: NextRequest) {
@@ -13,7 +14,7 @@ export async function GET(req: NextRequest) {
     data: { usedAt: now },
   });
   if (consumed.count !== 1) {
-    return NextResponse.redirect(new URL("/connexion?erreur=lien", req.url));
+    return redirectTo("/connexion?erreur=lien");
   }
   const { email } = await db.loginToken.findUniqueOrThrow({ where: { token } });
   const name = email
@@ -22,5 +23,5 @@ export async function GET(req: NextRequest) {
     .replace(/^\w/, (c) => c.toUpperCase());
   const user = await db.user.upsert({ where: { email }, update: {}, create: { email, name } });
   await startSession(user.id);
-  return NextResponse.redirect(new URL(next, req.url));
+  return redirectTo(next);
 }
