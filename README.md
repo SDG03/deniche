@@ -112,6 +112,12 @@ Les choix faits en cours de route sont expliqués dans [`DECISIONS.md`](DECISION
 | `npm run lint` · `npm run typecheck` · `npm run format` | qualité |
 | `node scripts/capture-docs.mjs` | régénère `docs/screens/` (serveur lancé) |
 
+### Mettre en ligne (Render, gratuit)
+
+Le fichier [`render.yaml`](render.yaml) décrit le déploiement. Sur [render.com](https://render.com) : **New + → Blueprint**, choisir ce dépôt, puis **Apply**. Render installe, construit, remplit la base de démo à chaque démarrage et sert l'appli en HTTPS.
+
+Limites de l'offre gratuite : mise en veille après 15 minutes sans visite (premier chargement d'environ 50 s ensuite), et base remise à zéro à chaque redémarrage. Pour une démo, c'est plutôt un avantage.
+
 ### Activer Stripe (mode test)
 
 Dans `.env` (voir `.env.example`) :
